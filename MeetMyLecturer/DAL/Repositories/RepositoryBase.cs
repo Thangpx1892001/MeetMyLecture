@@ -20,9 +20,9 @@ namespace DAL.Repositories
             this.dbSet = context.Set<TEntity>();
         }
 
-        public virtual IEnumerable<TEntity> GetAll()
+        public virtual IQueryable<TEntity> GetAll()
         {
-            return dbSet.ToList();
+            return dbSet;
         }
 
         public virtual TEntity GetByID(object id)
