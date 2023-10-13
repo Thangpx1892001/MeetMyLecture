@@ -2,9 +2,14 @@
 using BAL.DAOs.Interfaces;
 using BAL.DTOs.Accounts;
 using BAL.DTOs.Authentications;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using DAL.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MeetMyLecturer.Controllers
 {
@@ -120,6 +125,59 @@ namespace MeetMyLecturer.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+                GetAccount getAccount = _accountDAO.Login(authenAccount, _jwtAuthOptions.Value);
+                return Ok(new
+                {
+                    Data = getAccount
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    Message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpGet("GoogleLogin")]
+        public IActionResult GoogleLogin()
+        {
+            var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet("GoogleResponse")]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            try
+            {
+                var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var claims = result.Principal.Identities.FirstOrDefault()
+                    .Claims.Select(claim => new
+                    {
+                        claim.Issuer,
+                        claim.OriginalIssuer,
+                        claim.Type,
+                        claim.Value
+                    });
+
+                var account = new CreateAccount
+                {
+                    Email = claims.FirstOrDefault(c => c.Type == "emailaddress").Value,
+                    Username = claims.FirstOrDefault(c => c.Type == "name").Value,
+                    Password = "1",
+                };
+                _accountDAO.Create(account);
+
+                var authenAccount = new AuthenticationAccount
+                {
+                    Email = account.Email,
+                    Password = account.Password,
+                };
                 GetAccount getAccount = _accountDAO.Login(authenAccount, _jwtAuthOptions.Value);
                 return Ok(new
                 {
