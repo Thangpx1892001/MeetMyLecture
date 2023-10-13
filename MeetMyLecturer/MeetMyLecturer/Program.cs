@@ -4,6 +4,7 @@ using BAL.DTOs.Authentications;
 using BAL.Profiles;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -76,13 +77,29 @@ builder.Services.AddAuthentication(options =>
 });
 #endregion
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}).AddCookie(options =>
+{
+    options.LoginPath = "/account/google-login";
+})
+.AddGoogle(options =>
+{
+    options.ClientId = "33202222454-u2uenqjnj31ta2o8qhomaqrl83rm3pn5.apps.googleusercontent.com";
+    options.ClientSecret = "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";
+});
+
 builder.Services.Configure<JwtAuth>(builder.Configuration.GetSection("JwtAuth"));
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
 
 builder.Services.AddScoped<IAccountDAO, AccountDAO>();
+builder.Services.AddScoped<ISubjectDAO, SubjectDAO>();
 
-builder.Services.AddAutoMapper(typeof(AccountProfile));
+builder.Services.AddAutoMapper(typeof(AccountProfile),
+                               typeof(SubjectProfile));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

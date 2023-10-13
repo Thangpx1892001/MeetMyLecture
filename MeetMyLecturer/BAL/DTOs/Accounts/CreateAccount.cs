@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BAL.ValidationAttributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,13 @@ namespace BAL.DTOs.Accounts
 {
     public class CreateAccount
     {
-        public string Username { get; set; } = null!;
+        public string Username { get; set; }
 
-        public string Password { get; set; } = null!;
+        public string Password { get; set; }
 
-        public string Email { get; set; } = null!;
+        [EmailAddress(ErrorMessage = "Email does not have a valid extension")]
+        public string Email { get; set; }
 
         public DateTime Dob { get; set; }
-
-        public string Role { get; set; } = null!;
     }
 }
