@@ -156,7 +156,7 @@ namespace MeetMyLecturer.Controllers
                 });
             }
         }
-        [HttpGet("GoogleLogin")]
+        [HttpPost("GoogleLogin")]
         public IActionResult GoogleLogin()
         {
             var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
