@@ -56,19 +56,18 @@ public partial class MeetMyLecturerContext : DbContext
                 .HasColumnName("dob");
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
-                .IsUnicode(false)
                 .HasColumnName("email");
+            entity.Property(e => e.Fullname)
+                .HasMaxLength(255)
+                .HasColumnName("fullname");
             entity.Property(e => e.Password)
                 .HasMaxLength(50)
-                .IsUnicode(false)
                 .HasColumnName("password");
             entity.Property(e => e.Role)
-                .HasMaxLength(20)
-                .IsUnicode(false)
+                .HasMaxLength(50)
                 .HasColumnName("role");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
-                .IsUnicode(false)
                 .HasColumnName("username");
         });
 
@@ -85,17 +84,14 @@ public partial class MeetMyLecturerContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
             entity.Property(e => e.Description)
-                .HasMaxLength(255)
-                .IsUnicode(false)
+                .HasMaxLength(300)
                 .HasColumnName("description");
             entity.Property(e => e.Reason)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("reason");
             entity.Property(e => e.SlotId).HasColumnName("slot_id");
             entity.Property(e => e.Status)
-                .HasMaxLength(20)
-                .IsUnicode(false)
+                .HasMaxLength(50)
                 .HasColumnName("status");
             entity.Property(e => e.StudentId).HasColumnName("student_id");
             entity.Property(e => e.SubjectId).HasColumnName("subject_id");
@@ -125,8 +121,7 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.BookingId).HasColumnName("booking_id");
             entity.Property(e => e.Comment)
-                .HasMaxLength(255)
-                .IsUnicode(false)
+                .HasMaxLength(300)
                 .HasColumnName("comment");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
@@ -176,12 +171,10 @@ public partial class MeetMyLecturerContext : DbContext
                 .HasColumnName("created_at");
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("description");
             entity.Property(e => e.LecturerId).HasColumnName("lecturer_id");
             entity.Property(e => e.Status)
-                .HasMaxLength(20)
-                .IsUnicode(false)
+                .HasMaxLength(50)
                 .HasColumnName("status");
             entity.Property(e => e.StudentId).HasColumnName("student_id");
             entity.Property(e => e.SubjectId).HasColumnName("subject_id");
@@ -210,8 +203,7 @@ public partial class MeetMyLecturerContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Code)
-                .HasMaxLength(20)
-                .IsUnicode(false)
+                .HasMaxLength(50)
                 .HasColumnName("code");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
@@ -223,18 +215,15 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.LimitBooking).HasColumnName("limit_booking");
             entity.Property(e => e.Location)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("location");
             entity.Property(e => e.StartDatetime)
                 .HasColumnType("datetime")
                 .HasColumnName("start_datetime");
             entity.Property(e => e.Status)
-                .HasMaxLength(20)
-                .IsUnicode(false)
+                .HasMaxLength(50)
                 .HasColumnName("status");
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("title");
 
             entity.HasOne(d => d.Lecturer).WithMany(p => p.Slots)
@@ -255,11 +244,9 @@ public partial class MeetMyLecturerContext : DbContext
                 .HasColumnName("created_at");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
-                .IsUnicode(false)
                 .HasColumnName("name");
             entity.Property(e => e.SubjectCode)
-                .HasMaxLength(20)
-                .IsUnicode(false)
+                .HasMaxLength(50)
                 .HasColumnName("subject_code");
 
             entity.HasMany(d => d.Lecturers).WithMany(p => p.Subjects)
