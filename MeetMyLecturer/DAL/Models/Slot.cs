@@ -11,8 +11,6 @@ public partial class Slot
 
     public string Title { get; set; } = null!;
 
-    public string SubjectCode { get; set; } = null!;
-
     public string Location { get; set; } = null!;
 
     public string Code { get; set; } = null!;

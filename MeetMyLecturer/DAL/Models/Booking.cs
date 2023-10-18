@@ -11,6 +11,8 @@ public partial class Booking
 
     public int SlotId { get; set; }
 
+    public int SubjectId { get; set; }
+
     public string Description { get; set; } = null!;
 
     public string Reason { get; set; } = null!;
@@ -26,4 +28,6 @@ public partial class Booking
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
     public virtual Slot Slot { get; set; } = null!;
+
+    public virtual Subject Subject { get; set; } = null!;
 }

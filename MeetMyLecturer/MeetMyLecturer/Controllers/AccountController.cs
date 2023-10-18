@@ -140,7 +140,22 @@ namespace MeetMyLecturer.Controllers
             }
         }
 
-
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            try
+            {
+                HttpContext.SignOutAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    Message = ex.Message
+                });
+            }
+        }
         [HttpGet("GoogleLogin")]
         public IActionResult GoogleLogin()
         {
@@ -165,18 +180,10 @@ namespace MeetMyLecturer.Controllers
                         claim.Value
                     });
 
-                var account = new CreateAccount
-                {
-                    Email = claims.FirstOrDefault(c => c.Type == "emailaddress").Value,
-                    Username = claims.FirstOrDefault(c => c.Type == "name").Value,
-                    Password = "1",
-                };
-                _accountDAO.Create(account);
-
                 var authenAccount = new AuthenticationAccount
                 {
-                    Email = account.Email,
-                    Password = account.Password,
+                    Email = claims.FirstOrDefault(c => c.Type == "emailaddress").Value,
+                    Password = "1",
                 };
                 GetAccount getAccount = _accountDAO.Login(authenAccount, _jwtAuthOptions.Value);
                 return Ok(new

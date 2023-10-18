@@ -11,7 +11,7 @@ public partial class Request
 
     public int LecturerId { get; set; }
 
-    public string SubjectCode { get; set; } = null!;
+    public int SubjectId { get; set; }
 
     public string Description { get; set; } = null!;
 
@@ -22,4 +22,6 @@ public partial class Request
     public virtual Account Lecturer { get; set; } = null!;
 
     public virtual Account Student { get; set; } = null!;
+
+    public virtual Subject Subject { get; set; } = null!;
 }
