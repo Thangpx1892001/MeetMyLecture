@@ -98,6 +98,7 @@ public partial class MeetMyLecturerContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("status");
             entity.Property(e => e.StudentId).HasColumnName("student_id");
+            entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
             entity.HasOne(d => d.IdNavigation).WithOne(p => p.Booking)
                 .HasForeignKey<Booking>(d => d.Id)
@@ -108,6 +109,11 @@ public partial class MeetMyLecturerContext : DbContext
                 .HasForeignKey(d => d.SlotId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Booking_Slot");
+
+            entity.HasOne(d => d.Subject).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.SubjectId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Booking_Subject");
         });
 
         modelBuilder.Entity<Feedback>(entity =>
@@ -178,10 +184,7 @@ public partial class MeetMyLecturerContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("status");
             entity.Property(e => e.StudentId).HasColumnName("student_id");
-            entity.Property(e => e.SubjectCode)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("subject_code");
+            entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
             entity.HasOne(d => d.Lecturer).WithMany(p => p.RequestLecturers)
                 .HasForeignKey(d => d.LecturerId)
@@ -192,6 +195,11 @@ public partial class MeetMyLecturerContext : DbContext
                 .HasForeignKey(d => d.StudentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Request_Account");
+
+            entity.HasOne(d => d.Subject).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.SubjectId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Request_Subject");
         });
 
         modelBuilder.Entity<Slot>(entity =>
@@ -224,10 +232,6 @@ public partial class MeetMyLecturerContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("status");
-            entity.Property(e => e.SubjectCode)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("subject_code");
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .IsUnicode(false)
