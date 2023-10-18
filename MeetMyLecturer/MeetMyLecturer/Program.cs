@@ -86,8 +86,8 @@ builder.Services.AddAuthentication(options =>
 })
 .AddGoogle(options =>
 {
-    options.ClientId = "33202222454-u2uenqjnj31ta2o8qhomaqrl83rm3pn5.apps.googleusercontent.com";
-    options.ClientSecret = "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";
+    options.ClientId = "33202222454-jvmu4vr5h7vmoc5eh86stie3e7ocbeav.apps.googleusercontent.com";
+    options.ClientSecret = "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";
 });
 
 builder.Services.Configure<JwtAuth>(builder.Configuration.GetSection("JwtAuth"));
