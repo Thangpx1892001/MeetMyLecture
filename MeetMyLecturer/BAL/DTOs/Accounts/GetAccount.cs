@@ -16,6 +16,8 @@ namespace BAL.DTOs.Accounts
 
         public string Password { get; set; }
 
+        public string Fullname { get; set; }
+
         public string Email { get; set; }
 
         public DateTime Dob { get; set; }

@@ -15,6 +15,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BAL.DAOs.Implementations
 {
@@ -35,12 +36,29 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
+                List<Subject> listSubject = new List<Subject>();
+                var listSubjectId = create.SubjectId;
+                if (listSubjectId != null) 
+                { 
+                    foreach (var id in listSubjectId)
+                    {
+                        var checkId = _SubjectRepo.GetByID(id);
+                        if (checkId == null)
+                        {
+                            throw new Exception("Subject Id does not exist in the system.");
+                        }
+                        listSubject.Add(checkId);
+                    }
+                }
+
                 Account account = new Account()
                 {
                     Username = create.Username,
                     Email = create.Email,
                     Password = create.Password,
+                    Fullname = create.Fullname,
                     Dob = create.Dob,
+                    Role = create.Role,
                 };
 
                 int checkRole = CheckMailForRole(create.Email);
@@ -59,6 +77,16 @@ namespace BAL.DAOs.Implementations
 
                 _AccountRepo.Insert(account);
                 _AccountRepo.Commit();
+
+                if (checkRole == 1)
+                {
+                    foreach (var item in listSubject)
+                    {
+                        item.Lecturers.Add(account);
+                        _SubjectRepo.Update(item);
+                        _SubjectRepo.Commit();
+                    }
+                }
             }
             catch (Exception ex)
             {

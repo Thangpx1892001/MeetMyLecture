@@ -13,9 +13,15 @@ namespace BAL.DTOs.Accounts
 
         public string Password { get; set; }
 
+        public string Fullname { get; set; }
+
         [EmailAddress(ErrorMessage = "Email does not have a valid extension")]
         public string Email { get; set; }
 
         public DateTime Dob { get; set; }
+
+        public string Role { get; set; }
+
+        public List<int> SubjectId { get; set; }
     }
 }
