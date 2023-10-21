@@ -182,7 +182,7 @@ namespace MeetMyLecturer.Controllers
 
                 var authenAccount = new AuthenticationAccount
                 {
-                    Email = claims.FirstOrDefault(c => c.Type == "emailaddress").Value,
+                    Email = claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").Value,
                     Password = "1",
                 };
                 GetAccount getAccount = _accountDAO.Login(authenAccount, _jwtAuthOptions.Value);

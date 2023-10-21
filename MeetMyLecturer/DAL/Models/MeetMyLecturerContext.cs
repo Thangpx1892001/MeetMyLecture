@@ -216,6 +216,9 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.Location)
                 .HasMaxLength(255)
                 .HasColumnName("location");
+            entity.Property(e => e.Mode)
+                .HasMaxLength(50)
+                .HasColumnName("mode");
             entity.Property(e => e.StartDatetime)
                 .HasColumnType("datetime")
                 .HasColumnName("start_datetime");

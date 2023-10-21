@@ -1,6 +1,7 @@
 ﻿using BAL.DAOs.Implementations;
 using BAL.DAOs.Interfaces;
-using BAL.DTOs.Accounts;
+using BAL.DTOs.Feedbacks;
+using BAL.DTOs.Notifications;
 using BAL.DTOs.Subjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,24 +10,24 @@ namespace MeetMyLecturer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SubjectController : ControllerBase
+    public class NotificationController : ControllerBase
     {
-        public ISubjectDAO _subjectDAO;
+        public INotificationDAO _notificationDAO;
 
-        public SubjectController(ISubjectDAO subjectDAO)
+        public NotificationController(INotificationDAO notificationDAO)
         {
-            _subjectDAO = subjectDAO;
+            _notificationDAO = notificationDAO;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAll(int id)
         {
             try
             {
-                List<GetSubject> subjects = _subjectDAO.GetAll();
+                List<GetNotification> notifications = _notificationDAO.GetAll();
                 return Ok(new
                 {
-                    Data = subjects
+                    Data = notifications
                 });
             }
             catch (Exception ex)
@@ -43,10 +44,10 @@ namespace MeetMyLecturer.Controllers
         {
             try
             {
-                GetSubject subject = _subjectDAO.Get(id);
+                GetNotification notification = _notificationDAO.Get(id);
                 return Ok(new
                 {
-                    Data = subject
+                    Data = notification
                 });
             }
             catch (Exception ex)
@@ -59,7 +60,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] CreateSubject create)
+        public IActionResult Post([FromBody] CreateNotification create)
         {
             try
             {
@@ -67,7 +68,7 @@ namespace MeetMyLecturer.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                _subjectDAO.Create(create);
+                _notificationDAO.Create(create);
                 return Ok();
             }
             catch (Exception ex)
@@ -77,7 +78,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UpdateSubject update)
+        public IActionResult Put(int id, [FromBody] UpdateNotification update)
         {
             try
             {
@@ -85,21 +86,7 @@ namespace MeetMyLecturer.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                _subjectDAO.Update(id, update);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            try
-            {
-                _subjectDAO.Delete(id);
+                _notificationDAO.Update(id, update);
                 return Ok();
             }
             catch (Exception ex)

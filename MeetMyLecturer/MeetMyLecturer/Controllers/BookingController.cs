@@ -1,7 +1,7 @@
 ﻿using BAL.DAOs.Implementations;
 using BAL.DAOs.Interfaces;
-using BAL.DTOs.Accounts;
-using BAL.DTOs.Subjects;
+using BAL.DTOs.Bookings;
+using BAL.DTOs.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,24 +9,24 @@ namespace MeetMyLecturer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SubjectController : ControllerBase
+    public class BookingController : ControllerBase
     {
-        public ISubjectDAO _subjectDAO;
+        public IBookingDAO _bookingDAO;
 
-        public SubjectController(ISubjectDAO subjectDAO)
+        public BookingController(IBookingDAO bookingDAO)
         {
-            _subjectDAO = subjectDAO;
+            _bookingDAO = bookingDAO;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAllById(int id)
         {
             try
             {
-                List<GetSubject> subjects = _subjectDAO.GetAll();
+                List<GetBooking> bookings = _bookingDAO.GetAllById(id);
                 return Ok(new
                 {
-                    Data = subjects
+                    Data = bookings
                 });
             }
             catch (Exception ex)
@@ -43,10 +43,10 @@ namespace MeetMyLecturer.Controllers
         {
             try
             {
-                GetSubject subject = _subjectDAO.Get(id);
+                GetBooking booking = _bookingDAO.Get(id);
                 return Ok(new
                 {
-                    Data = subject
+                    Data = booking
                 });
             }
             catch (Exception ex)
@@ -59,7 +59,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] CreateSubject create)
+        public IActionResult Post([FromBody] CreateBooking create)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace MeetMyLecturer.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                _subjectDAO.Create(create);
+                _bookingDAO.Create(create);
                 return Ok();
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UpdateSubject update)
+        public IActionResult Put(int id, [FromBody] UpdateBooking update)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace MeetMyLecturer.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                _subjectDAO.Update(id, update);
+                _bookingDAO.Update(id, update);
                 return Ok();
             }
             catch (Exception ex)
@@ -99,7 +99,7 @@ namespace MeetMyLecturer.Controllers
         {
             try
             {
-                _subjectDAO.Delete(id);
+                _bookingDAO.Delete(id);
                 return Ok();
             }
             catch (Exception ex)

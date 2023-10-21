@@ -36,21 +36,6 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<Subject> listSubject = new List<Subject>();
-                var listSubjectId = create.SubjectId;
-                if (listSubjectId != null) 
-                { 
-                    foreach (var id in listSubjectId)
-                    {
-                        var checkId = _SubjectRepo.GetByID(id);
-                        if (checkId == null)
-                        {
-                            throw new Exception("Subject Id does not exist in the system.");
-                        }
-                        listSubject.Add(checkId);
-                    }
-                }
-
                 Account account = new Account()
                 {
                     Username = create.Username,
@@ -78,15 +63,29 @@ namespace BAL.DAOs.Implementations
                 _AccountRepo.Insert(account);
                 _AccountRepo.Commit();
 
-                if (checkRole == 1)
-                {
-                    foreach (var item in listSubject)
-                    {
-                        item.Lecturers.Add(account);
-                        _SubjectRepo.Update(item);
-                        _SubjectRepo.Commit();
-                    }
-                }
+                //if (checkRole == 1)
+                //{
+                //    List<Subject> listSubject = new List<Subject>();
+                //    var listSubjectId = create.SubjectId;
+                //    if (listSubjectId != null)
+                //    {
+                //        foreach (var id in listSubjectId)
+                //        {
+                //            var checkId = _SubjectRepo.GetByID(id);
+                //            if (checkId == null)
+                //            {
+                //                throw new Exception("Subject Id does not exist in the system.");
+                //            }
+                //            listSubject.Add(checkId);
+                //        }
+                //    }
+                //    foreach (var item in listSubject)
+                //    {
+                //        item.Lecturers.Add(account);
+                //        _SubjectRepo.Update(item);
+                //        _SubjectRepo.Commit();
+                //    }
+                //}
             }
             catch (Exception ex)
             {
