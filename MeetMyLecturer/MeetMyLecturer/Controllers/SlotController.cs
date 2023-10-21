@@ -1,7 +1,7 @@
 ﻿using BAL.DAOs.Implementations;
 using BAL.DAOs.Interfaces;
-using BAL.DTOs.Accounts;
-using BAL.DTOs.Subjects;
+using BAL.DTOs.Requests;
+using BAL.DTOs.Slots;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,24 +9,24 @@ namespace MeetMyLecturer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SubjectController : ControllerBase
+    public class SlotController : ControllerBase
     {
-        public ISubjectDAO _subjectDAO;
+        public ISlotDAO _slotDAO;
 
-        public SubjectController(ISubjectDAO subjectDAO)
+        public SlotController(ISlotDAO slotDAO)
         {
-            _subjectDAO = subjectDAO;
+            _slotDAO = slotDAO;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAllById(int id)
         {
             try
             {
-                List<GetSubject> subjects = _subjectDAO.GetAll();
+                List<GetSlot> slots = _slotDAO.GetAllById(id);
                 return Ok(new
                 {
-                    Data = subjects
+                    Data = slots
                 });
             }
             catch (Exception ex)
@@ -43,10 +43,10 @@ namespace MeetMyLecturer.Controllers
         {
             try
             {
-                GetSubject subject = _subjectDAO.Get(id);
+                GetSlot slot = _slotDAO.Get(id);
                 return Ok(new
                 {
-                    Data = subject
+                    Data = slot
                 });
             }
             catch (Exception ex)
@@ -59,7 +59,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] CreateSubject create)
+        public IActionResult Post([FromBody] CreateSlot create)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace MeetMyLecturer.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                _subjectDAO.Create(create);
+                _slotDAO.Create(create);
                 return Ok();
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UpdateSubject update)
+        public IActionResult Put(int id, [FromBody] UpdateSlot update)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace MeetMyLecturer.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                _subjectDAO.Update(id, update);
+                _slotDAO.Update(id, update);
                 return Ok();
             }
             catch (Exception ex)
@@ -99,7 +99,7 @@ namespace MeetMyLecturer.Controllers
         {
             try
             {
-                _subjectDAO.Delete(id);
+                _slotDAO.Delete(id);
                 return Ok();
             }
             catch (Exception ex)

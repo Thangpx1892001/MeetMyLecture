@@ -93,21 +93,38 @@ builder.Services.AddAuthentication(options =>
 builder.Services.Configure<JwtAuth>(builder.Configuration.GetSection("JwtAuth"));
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+builder.Services.AddScoped<ISlotRepository, SlotRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
 
 builder.Services.AddScoped<IAccountDAO, AccountDAO>();
+builder.Services.AddScoped<IBookingDAO, BookingDAO>();
+builder.Services.AddScoped<IFeedbackDAO, FeedbackDAO>();
+builder.Services.AddScoped<INotificationDAO, NotificationDAO>();
+builder.Services.AddScoped<IRequestDAO, RequestDAO>();
+builder.Services.AddScoped<ISlotDAO, SlotDAO>();
 builder.Services.AddScoped<ISubjectDAO, SubjectDAO>();
 
 builder.Services.AddAutoMapper(typeof(AccountProfile),
+                               typeof(BookingProfile),
+                               typeof(FeedbackProfile),
+                               typeof(NotificationProfile),
+                               typeof(RequestProfile),
+                               typeof(SlotProfile),
                                typeof(SubjectProfile));
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 
