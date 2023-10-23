@@ -13,7 +13,7 @@ namespace BAL.Profiles
     {   
         public BookingProfile() 
         {
-            CreateMap<Booking, GetBooking>().ReverseMap();
+            CreateMap<Booking, GetBooking>().ForMember(dept => dept.LecturerId, opts => opts.MapFrom(src => src.Slot.LecturerId)).ReverseMap();
         }
     }
 }

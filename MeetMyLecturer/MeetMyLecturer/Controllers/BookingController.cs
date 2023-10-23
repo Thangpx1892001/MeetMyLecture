@@ -18,7 +18,7 @@ namespace MeetMyLecturer.Controllers
             _bookingDAO = bookingDAO;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllById/{id}")]
         public IActionResult GetAllById(int id)
         {
             try

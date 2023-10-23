@@ -6,6 +6,7 @@ using DAL.Models;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,11 +72,12 @@ namespace BAL.DAOs.Implementations
             }
         }
 
-        public List<GetNotification> GetAll()
+        public List<GetNotification> GetAll(int id)
         {
             try
             {
-                List<GetNotification> list = _mapper.Map<List<GetNotification>>(_notificationRepo.GetAll());
+                List<GetNotification> list = _mapper.Map<List<GetNotification>>(_notificationRepo.GetAll().Include(n => n.Booking)
+                    .Include(n => n.Booking.Slot).Where(n => n.Booking.StudentId == id || n.Booking.Slot.LecturerId == id));
                 return list;
             }
             catch (Exception ex)

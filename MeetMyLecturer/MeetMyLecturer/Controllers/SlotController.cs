@@ -18,7 +18,7 @@ namespace MeetMyLecturer.Controllers
             _slotDAO = slotDAO;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllById/{id}")]
         public IActionResult GetAllById(int id)
         {
             try

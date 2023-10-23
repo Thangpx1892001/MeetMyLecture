@@ -146,7 +146,8 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<GetBooking> list = _mapper.Map<List<GetBooking>>(_bookingRepo.GetAll().Where(b => b.Id == key));
+                List<GetBooking> list = _mapper.Map<List<GetBooking>>(_bookingRepo.GetAll().Include(b => b.Slot)
+                                                                                  .Where(b => b.StudentId == key || b.Slot.LecturerId == key));
                 if (list == null)
                 {
                     throw new Exception("Doesn't have Booking.");
@@ -186,7 +187,6 @@ namespace BAL.DAOs.Implementations
                 {
                     throw new Exception("Id does not exist in the system.");
                 }
-
                 existedBooking.StudentId = update.StudentId;
                 existedBooking.SlotId = update.SlotId;
                 existedBooking.SubjectId = update.SubjectId;

@@ -55,7 +55,6 @@ namespace BAL.DAOs.Implementations
                 };
                 _slotRepo.Insert(slot);
                 _slotRepo.Commit();
-
             }
             catch (Exception ex)
             {
@@ -102,7 +101,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<GetSlot> list= _mapper.Map<List<GetSlot>>(_slotRepo.GetAll().Where(s => s.Id == key));
+                List<GetSlot> list= _mapper.Map<List<GetSlot>>(_slotRepo.GetAll().Where(s => s.LecturerId == key));
                 if (list == null)
                 {
                     throw new Exception("Doesn't have Slot.");

@@ -16,6 +16,8 @@ namespace BAL.DTOs.Bookings
 
         public int SlotId { get; set; }
 
+        public int LecturerId { get; set; }
+
         public int SubjectId { get; set; }
 
         public string Description { get; set; }
