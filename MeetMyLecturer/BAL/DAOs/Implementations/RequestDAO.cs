@@ -108,7 +108,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<GetRequest> list = _mapper.Map<List<GetRequest>>(_requestRepo.GetAll().Where(r => r.Id == key));
+                List<GetRequest> list = _mapper.Map<List<GetRequest>>(_requestRepo.GetAll().Where(r => r.StudentId == key || r.LecturerId == key));
                 if (list == null)
                 {
                     throw new Exception("Doesn't have Request.");

@@ -13,7 +13,8 @@ namespace BAL.Profiles
     {
         public NotificationProfile() 
         {
-            CreateMap<Notification, GetNotification>().ReverseMap();
+            CreateMap<Notification, GetNotification>().ForMember(dept => dept.StudentId, opts => opts.MapFrom(src => src.Booking.StudentId))
+                                                      .ForMember(dept => dept.LecturerId, opts => opts.MapFrom(src => src.Booking.Slot.LecturerId)).ReverseMap();
         }
     }
 }

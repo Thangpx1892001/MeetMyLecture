@@ -14,6 +14,10 @@ namespace BAL.DTOs.Notifications
 
         public int BookingId { get; set; }
 
+        public int StudentId { get; set; }
+
+        public int LecturerId { get; set; }
+
         public string Title { get; set; }
 
         public DateTime Time { get; set; }

@@ -19,12 +19,12 @@ namespace MeetMyLecturer.Controllers
             _notificationDAO = notificationDAO;
         }
 
-        [HttpGet]
-        public IActionResult GetAll(int id)
+        [HttpGet("GetAllById/{id}")]
+        public IActionResult GetAllById(int id)
         {
             try
             {
-                List<GetNotification> notifications = _notificationDAO.GetAll();
+                List<GetNotification> notifications = _notificationDAO.GetAll(id);
                 return Ok(new
                 {
                     Data = notifications

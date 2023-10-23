@@ -15,7 +15,5 @@ namespace BAL.DTOs.Bookings
         public int SubjectId { get; set; }
 
         public string Description { get; set; }
-
-        public string Reason { get; set; }
     }
 }

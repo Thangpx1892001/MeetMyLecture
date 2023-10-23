@@ -15,7 +15,7 @@ public partial class Booking
 
     public string Description { get; set; } = null!;
 
-    public string Reason { get; set; } = null!;
+    public string? Reason { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
