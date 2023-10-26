@@ -13,7 +13,7 @@ namespace BAL.Profiles
     {
         public FeedbackProfile() 
         {
-            CreateMap<Feedback, GetFeedback>().ReverseMap();
+            CreateMap<Feedback, GetFeedback>().ForMember(dept => dept.LecturerId, opts => opts.MapFrom(src => src.Booking.Slot.LecturerId)).ReverseMap();
         }
     }
 }

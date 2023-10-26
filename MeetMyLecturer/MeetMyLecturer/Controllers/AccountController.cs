@@ -156,6 +156,7 @@ namespace MeetMyLecturer.Controllers
                 });
             }
         }
+
         [HttpPost("GoogleLogin")]
         public IActionResult GoogleLogin()
         {

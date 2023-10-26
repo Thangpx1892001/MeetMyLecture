@@ -39,7 +39,6 @@ namespace BAL.DAOs.Implementations
                 Feedback feedback = new Feedback()
                 {
                     BookingId = create.BookingId,
-                    Star = create.Star,
                     Comment = create.Comment,
                     CreatedAt = DateTime.UtcNow,
                 };
@@ -74,7 +73,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<GetFeedback> list = _mapper.Map<List<GetFeedback>>(_feedbackRepo.GetAll().Where(f => f.Id == key));
+                List<GetFeedback> list = _mapper.Map<List<GetFeedback>>(_feedbackRepo.GetAll().Where(f => f.Booking.Slot.LecturerId == key));
                 if (list == null)
                 {
                     throw new Exception("Doesn't have Feedback.");
