@@ -56,11 +56,6 @@ namespace BAL.DAOs.Implementations
                     throw new Exception("Subject Id does not exist in the system.");
                 }
 
-                if (checkStudentId.Role != "Student")
-                {
-                    throw new Exception("Account is not Student.");
-                }
-
                 Booking booking = new Booking()
                 {
                     StudentId = create.StudentId,

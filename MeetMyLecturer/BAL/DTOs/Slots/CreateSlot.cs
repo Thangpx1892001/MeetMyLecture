@@ -18,8 +18,10 @@ namespace BAL.DTOs.Slots
 
         public string Mode { get; set; }
 
-        public DateTime StartDatetime { get; set; }
+        public DateTime Date { get; set; }
 
-        public DateTime EndDatetime { get; set; }
+        public DateTime StartDateTime { get; set; }
+
+        public DateTime EndDateTime { get; set; }
     }
 }

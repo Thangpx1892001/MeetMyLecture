@@ -14,7 +14,7 @@ namespace BAL.DTOs.Feedbacks
 
         public int BookingId { get; set; }
 
-        public int Star { get; set; }
+        public int LecturerId { get; set; }
 
         public string Comment { get; set; }
 

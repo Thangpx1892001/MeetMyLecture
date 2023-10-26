@@ -23,11 +23,11 @@ public partial class Booking
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
-    public virtual Account IdNavigation { get; set; } = null!;
-
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
     public virtual Slot Slot { get; set; } = null!;
+
+    public virtual Account Student { get; set; } = null!;
 
     public virtual Subject Subject { get; set; } = null!;
 }

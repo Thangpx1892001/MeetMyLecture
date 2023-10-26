@@ -16,8 +16,12 @@ namespace BAL.DTOs.Slots
 
         public int LimitBooking { get; set; }
 
-        public DateTime StartDatetime { get; set; }
+        public string Mode { get; set; }
 
-        public DateTime EndDatetime { get; set; }
+        public DateTime Date { get; set; }
+
+        public DateTime StartDateTime { get; set; }
+
+        public DateTime EndDateTime { get; set; }
     }
 }

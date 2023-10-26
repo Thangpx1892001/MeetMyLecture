@@ -9,8 +9,6 @@ public partial class Feedback
 
     public int BookingId { get; set; }
 
-    public int Star { get; set; }
-
     public string Comment { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }

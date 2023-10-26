@@ -47,8 +47,8 @@ namespace BAL.DAOs.Implementations
                     Location = create.Location,
                     Code = randomString10,
                     LimitBooking = create.LimitBooking,
-                    StartDatetime = create.StartDatetime,
-                    EndDatetime = create.EndDatetime,
+                    StartDatetime = new DateTime(create.Date.Year, create.Date.Month, create.Date.Day, create.StartDateTime.Hour, create.StartDateTime.Minute, create.StartDateTime.Second),
+                    EndDatetime = new DateTime(create.Date.Year, create.Date.Month, create.Date.Day, create.EndDateTime.Hour, create.EndDateTime.Minute, create.EndDateTime.Second),
                     Mode = create.Mode,
                     CreatedAt = DateTime.UtcNow,
                     Status = "Not booking",
@@ -134,8 +134,9 @@ namespace BAL.DAOs.Implementations
                 existedSlot.Title = update.Title;
                 existedSlot.Location = update.Location;
                 existedSlot.LimitBooking = update.LimitBooking;
-                existedSlot.StartDatetime = update.StartDatetime;
-                existedSlot.EndDatetime = update.EndDatetime;
+                existedSlot.Mode = update.Mode;
+                existedSlot.StartDatetime = new DateTime(update.Date.Year, update.Date.Month, update.Date.Day, update.StartDateTime.Hour, update.StartDateTime.Minute, update.StartDateTime.Second);
+                existedSlot.EndDatetime = new DateTime(update.Date.Year, update.Date.Month, update.Date.Day, update.EndDateTime.Hour, update.EndDateTime.Minute, update.EndDateTime.Second);
                 _slotRepo.Update(existedSlot);
                 _slotRepo.Commit();
             }

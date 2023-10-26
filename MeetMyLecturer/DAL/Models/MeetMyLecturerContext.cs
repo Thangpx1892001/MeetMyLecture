@@ -77,9 +77,7 @@ public partial class MeetMyLecturerContext : DbContext
 
             entity.ToTable("Booking");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
@@ -96,15 +94,15 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.StudentId).HasColumnName("student_id");
             entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
-            entity.HasOne(d => d.IdNavigation).WithOne(p => p.Booking)
-                .HasForeignKey<Booking>(d => d.Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Booking_Account");
-
             entity.HasOne(d => d.Slot).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.SlotId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Booking_Slot");
+
+            entity.HasOne(d => d.Student).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.StudentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Booking_Account1");
 
             entity.HasOne(d => d.Subject).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.SubjectId)
@@ -126,7 +124,6 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
-            entity.Property(e => e.Star).HasColumnName("star");
 
             entity.HasOne(d => d.Booking).WithMany(p => p.Feedbacks)
                 .HasForeignKey(d => d.BookingId)
@@ -136,7 +133,7 @@ public partial class MeetMyLecturerContext : DbContext
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Notifica__3213E83F37302FC3");
+            entity.HasKey(e => e.Id).HasName("PK__Notifica__3213E83FC36DC4B9");
 
             entity.ToTable("Notification");
 
@@ -265,7 +262,7 @@ public partial class MeetMyLecturerContext : DbContext
                         .HasConstraintName("FK_Subject_Lecturer_Subject"),
                     j =>
                     {
-                        j.HasKey("SubjectId", "LecturerId").HasName("PK__Subject___5D49EBCBFE618E50");
+                        j.HasKey("SubjectId", "LecturerId").HasName("PK__Subject___5D49EBCB92CB194C");
                         j.ToTable("Subject_Lecturer");
                         j.IndexerProperty<int>("SubjectId").HasColumnName("subject_id");
                         j.IndexerProperty<int>("LecturerId").HasColumnName("lecturer_id");

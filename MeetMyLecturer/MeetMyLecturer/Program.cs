@@ -90,6 +90,15 @@ builder.Services.AddAuthentication(options =>
     options.ClientSecret = "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";
 });
 
+//add CORS
+builder.Services.AddCors(cors => cors.AddPolicy(
+                            name: "WebPolicy",
+                            build =>
+                            {
+                                build.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                            }
+                        ));
+
 builder.Services.Configure<JwtAuth>(builder.Configuration.GetSection("JwtAuth"));
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -126,6 +135,7 @@ app.UseSwaggerUI();
 //    app.UseSwaggerUI();
 //}
 
+app.UseCors("WebPolicy");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
