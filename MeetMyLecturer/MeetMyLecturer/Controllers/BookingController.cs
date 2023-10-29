@@ -76,6 +76,24 @@ namespace MeetMyLecturer.Controllers
             }
         }
 
+        [HttpPost("CreateByCode")]
+        public IActionResult Post([FromBody] CreateByCode createByCode)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                _bookingDAO.CreateByCode(createByCode);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] UpdateBooking update)
         {

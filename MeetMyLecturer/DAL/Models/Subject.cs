@@ -13,6 +13,8 @@ public partial class Subject
 
     public DateTime CreatedAt { get; set; }
 
+    public string? Status { get; set; }
+
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();

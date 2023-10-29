@@ -13,7 +13,7 @@ public partial class Slot
 
     public string Location { get; set; } = null!;
 
-    public string Code { get; set; } = null!;
+    public string? Code { get; set; }
 
     public int LimitBooking { get; set; }
 

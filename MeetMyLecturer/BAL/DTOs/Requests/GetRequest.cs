@@ -18,6 +18,10 @@ namespace BAL.DTOs.Requests
 
         public int SubjectId { get; set; }
 
+        public DateTime StartDatetime { get; set; }
+
+        public DateTime EndDatetime { get; set; }
+
         public string Description { get; set; }
 
         public DateTime CreatedAt { get; set; }

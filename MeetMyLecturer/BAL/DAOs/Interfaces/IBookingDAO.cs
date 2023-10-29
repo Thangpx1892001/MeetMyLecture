@@ -12,7 +12,7 @@ namespace BAL.DAOs.Interfaces
         public List<GetBooking> GetAllById(int key);
         public GetBooking Get(int key);
         public void Create(CreateBooking create);
-        public void Create(string code, int id, int subjectId);
+        public void CreateByCode(CreateByCode createByCode);
         public void Update(int key, UpdateBooking update);
         public void Delete(int key);
     }

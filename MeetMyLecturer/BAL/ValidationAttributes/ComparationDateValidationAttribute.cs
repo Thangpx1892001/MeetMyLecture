@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace BAL.ValidationAttributes
 {
-    public class FptEmailAddressValidationAttribute : ValidationAttribute
+    public class ComparationDateValidationAttribute : ValidationAttribute
     {
-        public FptEmailAddressValidationAttribute() { }
+        public ComparationDateValidationAttribute() { }
 
         public override bool IsValid(object? value)
         {
-            if (value is string emailAddress)
+            DateTime dateTime;
+            if (DateTime.TryParse(value.ToString(), out dateTime) && dateTime.CompareTo(DateTime.Today) >= 0)
             {
-                return emailAddress.EndsWith("@fpt.edu.vn");
+                return true;
             }
             return false;
         }

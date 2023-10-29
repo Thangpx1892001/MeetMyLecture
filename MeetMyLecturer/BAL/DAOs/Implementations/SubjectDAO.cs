@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BAL.DAOs.Implementations
 {
@@ -32,6 +33,7 @@ namespace BAL.DAOs.Implementations
                     SubjectCode = create.SubjectCode,
                     Name = create.Name,
                     CreatedAt = DateTime.UtcNow,
+                    Status = "Active",
                 };
                 _SubjectRepo.Insert(account);
                 _SubjectRepo.Commit();
@@ -49,9 +51,10 @@ namespace BAL.DAOs.Implementations
                 Subject existedSubject = _SubjectRepo.GetByID(key);
                 if (existedSubject == null)
                 {
-                    throw new Exception("Subject Id does not exist in the system.");
+                    throw new Exception("Id does not exist in the system.");
                 }
-                _SubjectRepo.Delete(key);
+                existedSubject.Status = "Unactive";
+                _SubjectRepo.Update(existedSubject);
                 _SubjectRepo.Commit();
             }
             catch (Exception ex)
@@ -67,7 +70,7 @@ namespace BAL.DAOs.Implementations
                 Subject subject = _SubjectRepo.GetByID(key);
                 if (subject == null)
                 {
-                    throw new Exception("Subject Id does not exist in the system.");
+                    throw new Exception("Id does not exist in the system.");
                 }
                 return _mapper.Map<GetSubject>(subject);
             }
@@ -97,7 +100,7 @@ namespace BAL.DAOs.Implementations
                 Subject existedSubject = _SubjectRepo.GetByID(key);
                 if (existedSubject == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Id does not exist in the system.");
                 }
 
                 existedSubject.SubjectCode = update.SubjectCode;
