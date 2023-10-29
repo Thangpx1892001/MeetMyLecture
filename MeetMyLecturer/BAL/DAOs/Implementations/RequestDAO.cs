@@ -35,17 +35,17 @@ namespace BAL.DAOs.Implementations
                 var checkStudentId = _AccountRepo.GetByID(create.StudentId);
                 var checkLecturerId = _AccountRepo.GetByID(create.LecturerId);
                 var checkSubjectId = _subjectRepo.GetByID(create.SubjectId);
-                if (checkStudentId != null)
+                if (checkStudentId == null)
                 {
                     throw new Exception("Account Id does not exist in the system.");
                 }
 
-                if (checkLecturerId != null)
+                if (checkLecturerId == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Lecturer Id does not exist in the system.");
                 }
 
-                if (checkSubjectId != null)
+                if (checkSubjectId == null)
                 {
                     throw new Exception("Subject Id does not exist in the system.");
                 }
@@ -55,6 +55,8 @@ namespace BAL.DAOs.Implementations
                     StudentId = create.StudentId,
                     LecturerId = create.LecturerId,
                     SubjectId = create.SubjectId,
+                    StartDatetime = new DateTime(create.Date.Year, create.Date.Month, create.Date.Day, create.StartDateTime.Hour, create.StartDateTime.Minute, create.StartDateTime.Second),
+                    EndDatetime = new DateTime(create.Date.Year, create.Date.Month, create.Date.Day, create.EndDateTime.Hour, create.EndDateTime.Minute, create.EndDateTime.Second),
                     Description = create.Description,
                     CreatedAt = DateTime.UtcNow,
                     Status = "Pending",
@@ -128,17 +130,17 @@ namespace BAL.DAOs.Implementations
                 var checkStudentId = _AccountRepo.GetByID(update.StudentId);
                 var checkLecturerId = _AccountRepo.GetByID(update.LecturerId);
                 var checkSubjectId = _subjectRepo.GetByID(update.SubjectId);
-                if (checkStudentId != null)
+                if (checkStudentId == null)
                 {
                     throw new Exception("Account Id does not exist in the system.");
                 }
 
-                if (checkLecturerId != null)
+                if (checkLecturerId == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Lecturer Id does not exist in the system.");
                 }
 
-                if (checkSubjectId != null)
+                if (checkSubjectId == null)
                 {
                     throw new Exception("Subject Id does not exist in the system.");
                 }
@@ -152,7 +154,10 @@ namespace BAL.DAOs.Implementations
                 existedRequest.StudentId = update.StudentId;
                 existedRequest.LecturerId = update.LecturerId;
                 existedRequest.SubjectId = update.SubjectId;
+                existedRequest.StartDatetime = new DateTime(update.Date.Year, update.Date.Month, update.Date.Day, update.StartDateTime.Hour, update.StartDateTime.Minute, update.StartDateTime.Second);
+                existedRequest.EndDatetime = new DateTime(update.Date.Year, update.Date.Month, update.Date.Day, update.EndDateTime.Hour, update.EndDateTime.Minute, update.EndDateTime.Second);
                 existedRequest.Description = update.Description;
+                existedRequest.Status = update.Status;
                 _requestRepo.Update(existedRequest);
                 _requestRepo.Commit();
             }

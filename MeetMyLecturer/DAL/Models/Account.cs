@@ -19,6 +19,8 @@ public partial class Account
 
     public string Role { get; set; } = null!;
 
+    public string? Status { get; set; }
+
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual ICollection<Request> RequestLecturers { get; set; } = new List<Request>();

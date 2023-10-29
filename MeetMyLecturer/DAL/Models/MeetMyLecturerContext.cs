@@ -66,6 +66,9 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.Role)
                 .HasMaxLength(50)
                 .HasColumnName("role");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasColumnName("status");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .HasColumnName("username");
@@ -169,7 +172,13 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .HasColumnName("description");
+            entity.Property(e => e.EndDatetime)
+                .HasColumnType("datetime")
+                .HasColumnName("end_datetime");
             entity.Property(e => e.LecturerId).HasColumnName("lecturer_id");
+            entity.Property(e => e.StartDatetime)
+                .HasColumnType("datetime")
+                .HasColumnName("start_datetime");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");
@@ -243,8 +252,11 @@ public partial class MeetMyLecturerContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(300)
                 .HasColumnName("name");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasColumnName("status");
             entity.Property(e => e.SubjectCode)
                 .HasMaxLength(50)
                 .HasColumnName("subject_code");

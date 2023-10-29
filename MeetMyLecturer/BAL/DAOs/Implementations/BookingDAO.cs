@@ -41,17 +41,17 @@ namespace BAL.DAOs.Implementations
                 var checkStudentId = _AccountRepo.GetByID(create.StudentId);
                 var checkSlotId = _slotRepo.GetByID(create.SlotId);
                 var checkSubjectId = _subjectRepo.GetByID(create.SubjectId);
-                if (checkStudentId != null)
+                if (checkStudentId == null)
                 {
                     throw new Exception("Account Id does not exist in the system.");
                 }
 
-                if (checkSlotId != null)
+                if (checkSlotId == null)
                 {
                     throw new Exception("Slot Id does not exist in the system.");
                 }
 
-                if (checkSubjectId != null)
+                if (checkSubjectId == null)
                 {
                     throw new Exception("Subject Id does not exist in the system.");
                 }
@@ -75,30 +75,61 @@ namespace BAL.DAOs.Implementations
             }
         }
 
-        public void Create(string code, int id, int subjectId)
+        public void CreateByCode(CreateByCode createByCode)
         {
-            Slot existedBooking = _slotRepo.GetAll().FirstOrDefault(b => b.Code == code);
-            if (existedBooking == null)
+            try
             {
-                throw new Exception("Slot does not exist in the system.");
-            }
-            List<Booking> bookings = _bookingRepo.GetAll().Where(b => b.SlotId == existedBooking.Id && b.Status == "Booked").ToList();
-            var countBooking = bookings.Count();
-            if(countBooking < existedBooking.LimitBooking) 
-            {
-                Booking booking = new Booking()
+                var checkStudentId = _AccountRepo.GetByID(createByCode.StudentId);
+                var checkSlotId = _slotRepo.GetByID(createByCode.SlotId);
+                var checkSubjectId = _subjectRepo.GetByID(createByCode.SubjectId);
+                if (checkStudentId == null)
                 {
-                    StudentId = id,
-                    SlotId = existedBooking.Id,
-                    SubjectId = subjectId,
-                    Description = "Don't have Description",
-                    CreatedAt = DateTime.UtcNow,
-                    Status = "Booked",
-                };
+                    throw new Exception("Account Id does not exist in the system.");
+                }
+
+                if (checkSlotId == null)
+                {
+                    throw new Exception("Slot Id does not exist in the system.");
+                }
+
+                if (checkSubjectId == null)
+                {
+                    throw new Exception("Subject Id does not exist in the system.");
+                }
+
+                if (!checkSlotId.Code.Equals(createByCode.Code))
+                {
+                    throw new Exception("Wrong code of slot.");
+                }
+
+                List<Booking> bookings = _bookingRepo.GetAll().Where(b => b.SlotId == checkSlotId.Id && b.Status == "Success").ToList();
+                var countBooking = bookings.Count();
+                if (countBooking < checkSlotId.LimitBooking)
+                {
+                    Booking booking = new Booking()
+                    {
+                        StudentId = createByCode.StudentId,
+                        SlotId = createByCode.SlotId,
+                        SubjectId = createByCode.SubjectId,
+                        Description = "Don't have Description",
+                        CreatedAt = DateTime.UtcNow,
+                        Status = "Success",
+                    };
+                    _bookingRepo.Insert(booking);
+                    _bookingRepo.Commit();
+                    bookings.Add(booking);
+                    countBooking = bookings.Count();
+                    if (countBooking == checkSlotId.LimitBooking)
+                    {
+                        checkSlotId.Status = "Full";
+                        _slotRepo.Update(checkSlotId);
+                        _slotRepo.Commit();
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                throw new Exception("Slot is full booking in the system.");
+                throw new Exception(ex.Message);
             }
         }
 
@@ -124,7 +155,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                Booking booking = _bookingRepo.GetByID(key);
+                Booking booking = _bookingRepo.GetAll().Include(b => b.Slot).FirstOrDefault(b => b.Id == key);
                 if (booking == null)
                 {
                     throw new Exception("Id does not exist in the system.");
@@ -160,36 +191,49 @@ namespace BAL.DAOs.Implementations
             try
             {
                 var checkStudentId = _AccountRepo.GetByID(update.StudentId);
-                var checkSlotId = _AccountRepo.GetByID(update.SlotId);
+                var checkSlotId = _slotRepo.GetByID(update.SlotId);
                 var checkSubjectId = _subjectRepo.GetByID(update.SubjectId);
-                if (checkStudentId != null)
+                if (checkStudentId == null)
                 {
                     throw new Exception("Account Id does not exist in the system.");
                 }
 
-                if (checkSlotId != null)
+                if (checkSlotId == null)
                 {
                     throw new Exception("Slot Id does not exist in the system.");
                 }
 
-                if (checkSubjectId != null)
+                if (checkSubjectId == null)
                 {
                     throw new Exception("Subject Id does not exist in the system.");
                 }
 
-                Booking existedBooking = _bookingRepo.GetByID(key);
+                Booking existedBooking = _bookingRepo.GetAll().Include(b => b.Slot).FirstOrDefault(b => b.Id == key);
                 if (existedBooking == null)
                 {
                     throw new Exception("Id does not exist in the system.");
                 }
+
                 existedBooking.StudentId = update.StudentId;
                 existedBooking.SlotId = update.SlotId;
                 existedBooking.SubjectId = update.SubjectId;
                 existedBooking.Description = update.Description;
                 existedBooking.Reason = update.Reason;
                 existedBooking.Status = update.Status;
+                if (existedBooking.Slot.EndDatetime <= DateTime.Now)
+                {
+                    existedBooking.Status = "Finish";
+                }
                 _bookingRepo.Update(existedBooking);
                 _bookingRepo.Commit();
+                List<Booking> bookings = _bookingRepo.GetAll().Where(b => b.SlotId == checkSlotId.Id && b.Status == "Success").ToList();
+                var countBooking = bookings.Count();
+                if (countBooking == checkSlotId.LimitBooking)
+                {
+                    checkSlotId.Status = "Full";
+                    _slotRepo.Update(checkSlotId);
+                    _slotRepo.Commit();
+                }
             }
             catch (Exception ex)
             {

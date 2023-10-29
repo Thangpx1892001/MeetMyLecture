@@ -44,6 +44,7 @@ namespace BAL.DAOs.Implementations
                     Fullname = create.Fullname,
                     Dob = create.Dob,
                     Role = create.Role,
+                    Status = "Active"
                 };
 
                 int checkRole = CheckMailForRole(create.Email);
@@ -102,7 +103,9 @@ namespace BAL.DAOs.Implementations
                 {
                     throw new Exception("Account Id does not exist in the system.");
                 }
-                _AccountRepo.Delete(key);
+
+                existedAccount.Status = "Unactive";
+                _AccountRepo.Update(existedAccount);
                 _AccountRepo.Commit();
             }
             catch (Exception ex)
@@ -115,8 +118,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                Account account = _AccountRepo.GetAll().Include(a => a.Subjects)
-                    .FirstOrDefault(a => a.Id == key);
+                Account account = _AccountRepo.GetByID(key);
                 if (account == null)
                 {
                     throw new Exception("Account Id does not exist in the system.");
@@ -146,20 +148,19 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<Subject> listSubject = new List<Subject>();
-                var listSubjectId = update.SubjectId;
-                foreach (var id in listSubjectId)
-                {
-                    var checkId = _SubjectRepo.GetByID(id);
-                    if (checkId == null)
-                    {
-                        throw new Exception("Subject Id does not exist in the system.");
-                    }
-                    listSubject.Add(checkId);
-                }
+                //List<Subject> listSubject = new List<Subject>();
+                //var listSubjectId = update.SubjectId;
+                //foreach (var id in listSubjectId)
+                //{
+                //    var checkId = _SubjectRepo.GetByID(id);
+                //    if (checkId == null)
+                //    {
+                //        throw new Exception("Subject Id does not exist in the system.");
+                //    }
+                //    listSubject.Add(checkId);
+                //}
 
-                Account existedAccount = _AccountRepo.GetAll().Include(a => a.Subjects)
-                    .FirstOrDefault(a => a.Id == key);
+                Account existedAccount = _AccountRepo.GetByID(key);
                 if (existedAccount == null)
                 {
                     throw new Exception("Account Id does not exist in the system.");
@@ -169,16 +170,18 @@ namespace BAL.DAOs.Implementations
                 existedAccount.Email = update.Email;
                 existedAccount.Password = update.Password;
                 existedAccount.Dob = update.Dob;
-                existedAccount.Subjects.Clear();
+                existedAccount.Fullname = update.Fullname;
+                existedAccount.Role = update.Role;
+                //existedAccount.Subjects.Clear();
                 _AccountRepo.Update(existedAccount);
                 _AccountRepo.Commit();
 
-                foreach (var item in listSubject)
-                {
-                    item.Lecturers.Add(existedAccount);
-                    _SubjectRepo.Update(item);
-                    _SubjectRepo.Commit();
-                }
+                //foreach (var item in listSubject)
+                //{
+                //    item.Lecturers.Add(existedAccount);
+                //    _SubjectRepo.Update(item);
+                //    _SubjectRepo.Commit();
+                //}
             }
             catch (Exception ex)
             {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BAL.DTOs.Bookings
 {
-    public class CreateBooking
+    public class CreateByCode
     {
         public int StudentId { get; set; }
 
@@ -15,7 +15,7 @@ namespace BAL.DTOs.Bookings
 
         public int SubjectId { get; set; }
 
-        [Required(ErrorMessage = "Description is required.")]
-        public string Description { get; set; }
+        [Required(ErrorMessage = "Code is required.")]
+        public string Code { get; set; }
     }
 }

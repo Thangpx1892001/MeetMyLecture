@@ -5,6 +5,7 @@ using BAL.DTOs.Slots;
 using DAL.Models;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace BAL.DAOs.Implementations
             try
             {
                 var checkBookingId = _bookingRepo.GetByID(create.BookingId);
-                if (_bookingRepo != null)
+                if (checkBookingId == null)
                 {
                     throw new Exception("Booking Id does not exist in the system.");
                 }
@@ -73,7 +74,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<GetFeedback> list = _mapper.Map<List<GetFeedback>>(_feedbackRepo.GetAll().Where(f => f.Booking.Slot.LecturerId == key));
+                List<GetFeedback> list = _mapper.Map<List<GetFeedback>>(_feedbackRepo.GetAll().Include(x => x.Booking.Slot).Where(f => f.Booking.Slot.LecturerId == key));
                 if (list == null)
                 {
                     throw new Exception("Doesn't have Feedback.");

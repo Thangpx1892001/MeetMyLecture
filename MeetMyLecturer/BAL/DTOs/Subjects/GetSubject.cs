@@ -17,5 +17,7 @@ namespace BAL.DTOs.Subjects
         public string Name { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public string? Status { get; set; }
     }
 }

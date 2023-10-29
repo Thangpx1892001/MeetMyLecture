@@ -9,7 +9,7 @@ namespace BAL.DAOs.Interfaces
 {
     public interface INotificationDAO
     {
-        public List<GetNotification> GetAll(int id);
+        public List<GetNotification> GetAll();
         public GetNotification Get(int key);
         public void Create(CreateNotification create);
         public void Update(int key, UpdateNotification update);

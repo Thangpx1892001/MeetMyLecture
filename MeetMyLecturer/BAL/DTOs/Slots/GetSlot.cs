@@ -14,6 +14,8 @@ namespace BAL.DTOs.Slots
 
         public int LecturerId { get; set; }
 
+        public List<int> BookingId { get; set; }
+
         public string Title { get; set; }
 
         public string Location { get; set; }

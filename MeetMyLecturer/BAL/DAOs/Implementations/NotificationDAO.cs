@@ -33,7 +33,7 @@ namespace BAL.DAOs.Implementations
             try
             {
                 var checkBookingId = _bookingRepo.GetByID(create.BookingId);
-                if (_bookingRepo != null)
+                if (checkBookingId == null)
                 {
                     throw new Exception("Booking Id does not exist in the system.");
                 }
@@ -72,12 +72,12 @@ namespace BAL.DAOs.Implementations
             }
         }
 
-        public List<GetNotification> GetAll(int id)
+        public List<GetNotification> GetAll()
         {
             try
             {
                 List<GetNotification> list = _mapper.Map<List<GetNotification>>(_notificationRepo.GetAll().Include(n => n.Booking)
-                    .Include(n => n.Booking.Slot).Where(n => n.Booking.StudentId == id || n.Booking.Slot.LecturerId == id));
+                    .Include(n => n.Booking.Slot));
                 return list;
             }
             catch (Exception ex)
@@ -91,7 +91,7 @@ namespace BAL.DAOs.Implementations
             try
             {
                 var checkBookingId = _bookingRepo.GetByID(update.BookingId);
-                if (_bookingRepo != null)
+                if (checkBookingId == null)
                 {
                     throw new Exception("Booking Id does not exist in the system.");
                 }
