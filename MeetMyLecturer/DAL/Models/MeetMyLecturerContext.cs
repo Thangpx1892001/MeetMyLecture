@@ -172,13 +172,7 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .HasColumnName("description");
-            entity.Property(e => e.EndDatetime)
-                .HasColumnType("datetime")
-                .HasColumnName("end_datetime");
             entity.Property(e => e.LecturerId).HasColumnName("lecturer_id");
-            entity.Property(e => e.StartDatetime)
-                .HasColumnType("datetime")
-                .HasColumnName("start_datetime");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");

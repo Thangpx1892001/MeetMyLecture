@@ -2,12 +2,14 @@
 using BAL.DAOs.Interfaces;
 using BAL.DTOs.Bookings;
 using BAL.DTOs.Requests;
+using BAL.DTOs.Slots;
 using DAL.Models;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +36,29 @@ namespace BAL.DAOs.Implementations
             _mapper = mapper;
         }
 
+        public List<GetBooking> CheckStatus(int key)
+        {
+            try
+            {
+                List<Booking> list = _bookingRepo.GetAll().Include(b => b.Slot)
+                                                .Where(b => b.StudentId == key && b.Status != "Denied").ToList();
+                foreach (var item in list)
+                {
+                    if (item.Slot.EndDatetime <= DateTime.Now)
+                    {
+                        item.Status = "Finish";
+                        _bookingRepo.Update(item);
+                        _bookingRepo.Commit();
+                    }
+                }
+                return _mapper.Map<List<GetBooking>>(list);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public void Create(CreateBooking create)
         {
             try
@@ -41,6 +66,14 @@ namespace BAL.DAOs.Implementations
                 var checkStudentId = _AccountRepo.GetByID(create.StudentId);
                 var checkSlotId = _slotRepo.GetByID(create.SlotId);
                 var checkSubjectId = _subjectRepo.GetByID(create.SubjectId);
+
+                List<Booking> checkBookings = _bookingRepo.GetAll().Where(b => b.SlotId == create.SlotId && b.Status == "Success").ToList();
+                var countBooking = checkBookings.Count();
+                if (countBooking == checkSlotId.LimitBooking)
+                {
+                    throw new Exception("Slot is full in the system.");
+                }
+
                 if (checkStudentId == null)
                 {
                     throw new Exception("Account Id does not exist in the system.");
@@ -56,18 +89,39 @@ namespace BAL.DAOs.Implementations
                     throw new Exception("Subject Id does not exist in the system.");
                 }
 
-                Booking booking = new Booking()
+                var checkBooking = _bookingRepo.GetAll().FirstOrDefault(b => b.StudentId == create.StudentId && b.SlotId == create.SlotId);
+                if (checkBooking != null)
                 {
-                    StudentId = create.StudentId,
-                    SlotId = create.SlotId,
-                    SubjectId = create.SubjectId,
-                    Description = create.Description,
-                    CreatedAt = DateTime.UtcNow,
-                    Status = "Pending",
-                };
-                _bookingRepo.Insert(booking);
-                _bookingRepo.Commit();
+                    throw new Exception("You book slot already.");
+                }
 
+                if (create.Status.IsNullOrEmpty()) { 
+                    Booking booking = new Booking()
+                    {
+                        StudentId = create.StudentId,
+                        SlotId = create.SlotId,
+                        SubjectId = create.SubjectId,
+                        Description = create.Description,
+                        CreatedAt = DateTime.Now,
+                        Status = "Pending",
+                    };
+                    _bookingRepo.Insert(booking);
+                    _bookingRepo.Commit();
+                }
+                else
+                {
+                    Booking booking = new Booking()
+                    {
+                        StudentId = create.StudentId,
+                        SlotId = create.SlotId,
+                        SubjectId = create.SubjectId,
+                        Description = create.Description,
+                        CreatedAt = DateTime.Now,
+                        Status = create.Status,
+                    };
+                    _bookingRepo.Insert(booking);
+                    _bookingRepo.Commit();
+                }
             }
             catch (Exception ex)
             {
@@ -79,6 +133,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
+
                 var checkStudentId = _AccountRepo.GetByID(createByCode.StudentId);
                 var checkSlotId = _slotRepo.GetByID(createByCode.SlotId);
                 var checkSubjectId = _subjectRepo.GetByID(createByCode.SubjectId);
@@ -97,6 +152,12 @@ namespace BAL.DAOs.Implementations
                     throw new Exception("Subject Id does not exist in the system.");
                 }
 
+                var checkBooking = _bookingRepo.GetAll().FirstOrDefault(b => b.StudentId == createByCode.StudentId && b.SlotId == createByCode.SlotId);
+                if (checkBooking != null)
+                {
+                    throw new Exception("You book slot already.");
+                }
+
                 if (!checkSlotId.Code.Equals(createByCode.Code))
                 {
                     throw new Exception("Wrong code of slot.");
@@ -112,7 +173,7 @@ namespace BAL.DAOs.Implementations
                         SlotId = createByCode.SlotId,
                         SubjectId = createByCode.SubjectId,
                         Description = "Don't have Description",
-                        CreatedAt = DateTime.UtcNow,
+                        CreatedAt = DateTime.Now,
                         Status = "Success",
                     };
                     _bookingRepo.Insert(booking);
@@ -125,6 +186,10 @@ namespace BAL.DAOs.Implementations
                         _slotRepo.Update(checkSlotId);
                         _slotRepo.Commit();
                     }
+                }
+                else
+                {
+                    throw new Exception("Slot is full in the system.");
                 }
             }
             catch (Exception ex)
@@ -174,10 +239,6 @@ namespace BAL.DAOs.Implementations
             {
                 List<GetBooking> list = _mapper.Map<List<GetBooking>>(_bookingRepo.GetAll().Include(b => b.Slot)
                                                                                   .Where(b => b.StudentId == key || b.Slot.LecturerId == key));
-                if (list == null)
-                {
-                    throw new Exception("Doesn't have Booking.");
-                }
                 return list;
             }
             catch (Exception ex)
@@ -220,12 +281,9 @@ namespace BAL.DAOs.Implementations
                 existedBooking.Description = update.Description;
                 existedBooking.Reason = update.Reason;
                 existedBooking.Status = update.Status;
-                if (existedBooking.Slot.EndDatetime <= DateTime.Now)
-                {
-                    existedBooking.Status = "Finish";
-                }
                 _bookingRepo.Update(existedBooking);
                 _bookingRepo.Commit();
+
                 List<Booking> bookings = _bookingRepo.GetAll().Where(b => b.SlotId == checkSlotId.Id && b.Status == "Success").ToList();
                 var countBooking = bookings.Count();
                 if (countBooking == checkSlotId.LimitBooking)
@@ -233,6 +291,17 @@ namespace BAL.DAOs.Implementations
                     checkSlotId.Status = "Full";
                     _slotRepo.Update(checkSlotId);
                     _slotRepo.Commit();
+                    List<Booking> checkBookings = _bookingRepo.GetAll().Include(b => b.Slot).Where(b => b.SlotId == checkSlotId.Id && b.Status == "Pending").ToList();
+                    if(checkBookings.Count() > 0)
+                    {
+                        foreach (var booking in checkBookings)
+                        {
+                            booking.Status = "Denied";
+                            booking.Reason = "Slot is full";
+                            _bookingRepo.Update(booking);
+                            _bookingRepo.Commit();
+                        }
+                    }
                 }
             }
             catch (Exception ex)

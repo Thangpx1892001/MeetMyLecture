@@ -16,15 +16,6 @@ namespace BAL.DTOs.Requests
 
         public int SubjectId { get; set; }
 
-        [Required(ErrorMessage = "Date is required.")]
-        public DateTime Date { get; set; }
-
-        [Required(ErrorMessage = "Start Time is required.")]
-        public DateTime StartDateTime { get; set; }
-
-        [Required(ErrorMessage = "End Time is required.")]
-        public DateTime EndDateTime { get; set; }
-
         [Required(ErrorMessage = "Description is required.")]
         public string Description { get; set; }
 

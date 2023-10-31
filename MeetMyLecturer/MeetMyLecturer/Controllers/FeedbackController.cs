@@ -1,4 +1,5 @@
-﻿using BAL.DAOs.Implementations;
+﻿using BAL.Authentications;
+using BAL.DAOs.Implementations;
 using BAL.DAOs.Interfaces;
 using BAL.DTOs.Bookings;
 using BAL.DTOs.Feedbacks;
@@ -19,6 +20,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpGet("GetAllById/{id}")]
+        //[PermissionAuthorize("Lecturer")]
         public IActionResult GetAllById(int id)
         {
             try
@@ -39,6 +41,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpGet("{id}")]
+        //[PermissionAuthorize("Lecturer")]
         public IActionResult Get(int id)
         {
             try
@@ -59,6 +62,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPost]
+        //[PermissionAuthorize("Student")]
         public IActionResult Post([FromBody] CreateFeedback create)
         {
             try

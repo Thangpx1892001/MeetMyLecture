@@ -19,10 +19,6 @@ public partial class Request
 
     public string Status { get; set; } = null!;
 
-    public DateTime StartDatetime { get; set; }
-
-    public DateTime EndDatetime { get; set; }
-
     public virtual Account Lecturer { get; set; } = null!;
 
     public virtual Account Student { get; set; } = null!;

@@ -1,4 +1,5 @@
-﻿using BAL.DAOs.Implementations;
+﻿using BAL.Authentications;
+using BAL.DAOs.Implementations;
 using BAL.DAOs.Interfaces;
 using BAL.DTOs.Bookings;
 using BAL.DTOs.Requests;
@@ -19,11 +20,13 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpGet("GetAllById/{id}")]
+        //[PermissionAuthorize("Lecturer", "Student")]
         public IActionResult GetAllById(int id)
         {
             try
             {
-                List<GetBooking> bookings = _bookingDAO.GetAllById(id);
+                List<GetBooking> bookings = _bookingDAO.CheckStatus(id);
+                bookings = _bookingDAO.GetAllById(id);
                 return Ok(new
                 {
                     Data = bookings
@@ -39,6 +42,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpGet("{id}")]
+        //[PermissionAuthorize("Lecturer", "Student")]
         public IActionResult Get(int id)
         {
             try
@@ -59,6 +63,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPost]
+        //[PermissionAuthorize("Lecturer", "Student")]
         public IActionResult Post([FromBody] CreateBooking create)
         {
             try
@@ -77,6 +82,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPost("CreateByCode")]
+        //[PermissionAuthorize("Lecturer", "Student")]
         public IActionResult Post([FromBody] CreateByCode createByCode)
         {
             try
@@ -95,6 +101,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPut("{id}")]
+        //[PermissionAuthorize("Lecturer", "Student")]
         public IActionResult Put(int id, [FromBody] UpdateBooking update)
         {
             try
@@ -113,6 +120,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpDelete("{id}")]
+        //[PermissionAuthorize("Student")]
         public IActionResult Delete(int id)
         {
             try

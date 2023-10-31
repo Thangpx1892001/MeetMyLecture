@@ -1,4 +1,5 @@
-﻿using BAL.DAOs.Implementations;
+﻿using BAL.Authentications;
+using BAL.DAOs.Implementations;
 using BAL.DAOs.Interfaces;
 using BAL.DTOs.Accounts;
 using BAL.DTOs.Subjects;
@@ -19,6 +20,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpGet]
+        //[PermissionAuthorize("Admin")]
         public IActionResult Get()
         {
             try
@@ -39,6 +41,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpGet("{id}")]
+        //[PermissionAuthorize("Admin")]
         public IActionResult Get(int id)
         {
             try
@@ -59,6 +62,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPost]
+        //[PermissionAuthorize("Admin")]
         public IActionResult Post([FromBody] CreateSubject create)
         {
             try
@@ -77,6 +81,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPut("{id}")]
+        //[PermissionAuthorize("Admin")]
         public IActionResult Put(int id, [FromBody] UpdateSubject update)
         {
             try
@@ -95,6 +100,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpDelete("{id}")]
+        //[PermissionAuthorize("Admin")]
         public IActionResult Delete(int id)
         {
             try

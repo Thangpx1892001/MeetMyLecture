@@ -101,7 +101,7 @@ namespace BAL.DAOs.Implementations
                 Account existedAccount = _AccountRepo.GetByID(key);
                 if (existedAccount == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Id does not exist in the system.");
                 }
 
                 existedAccount.Status = "Unactive";
@@ -121,7 +121,7 @@ namespace BAL.DAOs.Implementations
                 Account account = _AccountRepo.GetByID(key);
                 if (account == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Id does not exist in the system.");
                 }
                 return _mapper.Map<GetAccount>(account);
             }
@@ -163,7 +163,7 @@ namespace BAL.DAOs.Implementations
                 Account existedAccount = _AccountRepo.GetByID(key);
                 if (existedAccount == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Id does not exist in the system.");
                 }
 
                 existedAccount.Username = update.Username;
