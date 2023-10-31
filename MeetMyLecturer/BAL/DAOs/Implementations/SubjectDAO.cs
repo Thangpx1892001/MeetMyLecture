@@ -32,7 +32,7 @@ namespace BAL.DAOs.Implementations
                 {
                     SubjectCode = create.SubjectCode,
                     Name = create.Name,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = DateTime.Now,
                     Status = "Active",
                 };
                 _SubjectRepo.Insert(account);

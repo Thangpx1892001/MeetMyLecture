@@ -17,5 +17,7 @@ namespace BAL.DTOs.Bookings
 
         [Required(ErrorMessage = "Description is required.")]
         public string Description { get; set; }
+
+        public string Status { get; set; }
     }
 }

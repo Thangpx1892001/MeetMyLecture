@@ -27,6 +27,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpGet]
+        //[PermissionAuthorize("Admin")]
         public IActionResult Get()
         {
             try
@@ -67,6 +68,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPost]
+        //[PermissionAuthorize("Admin")]
         public IActionResult Post([FromBody] CreateAccount create)
         {
             try
@@ -85,6 +87,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPut("{id}")]
+        //[PermissionAuthorize("Admin")]
         public IActionResult Put(int id, [FromBody] UpdateAccount update)
         {
             try
@@ -103,6 +106,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpDelete("{id}")]
+        //[PermissionAuthorize("Admin")]
         public IActionResult Delete(int id)
         {
             try

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BAL.DAOs.Implementations
 {
@@ -55,10 +56,8 @@ namespace BAL.DAOs.Implementations
                     StudentId = create.StudentId,
                     LecturerId = create.LecturerId,
                     SubjectId = create.SubjectId,
-                    StartDatetime = new DateTime(create.Date.Year, create.Date.Month, create.Date.Day, create.StartDateTime.Hour, create.StartDateTime.Minute, create.StartDateTime.Second),
-                    EndDatetime = new DateTime(create.Date.Year, create.Date.Month, create.Date.Day, create.EndDateTime.Hour, create.EndDateTime.Minute, create.EndDateTime.Second),
                     Description = create.Description,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = DateTime.Now,
                     Status = "Pending",
                 };
                 _requestRepo.Insert(request);
@@ -80,7 +79,8 @@ namespace BAL.DAOs.Implementations
                 {
                     throw new Exception("Id does not exist in the system.");
                 }
-                _requestRepo.Delete(key);
+                existedRequest.Status = "Denied";
+                _requestRepo.Update(existedRequest);
                 _requestRepo.Commit();
             }
             catch (Exception ex)
@@ -111,10 +111,6 @@ namespace BAL.DAOs.Implementations
             try
             {
                 List<GetRequest> list = _mapper.Map<List<GetRequest>>(_requestRepo.GetAll().Where(r => r.StudentId == key || r.LecturerId == key));
-                if (list == null)
-                {
-                    throw new Exception("Doesn't have Request.");
-                }
                 return list;
             }
             catch (Exception ex)
@@ -154,9 +150,6 @@ namespace BAL.DAOs.Implementations
                 existedRequest.StudentId = update.StudentId;
                 existedRequest.LecturerId = update.LecturerId;
                 existedRequest.SubjectId = update.SubjectId;
-                existedRequest.StartDatetime = new DateTime(update.Date.Year, update.Date.Month, update.Date.Day, update.StartDateTime.Hour, update.StartDateTime.Minute, update.StartDateTime.Second);
-                existedRequest.EndDatetime = new DateTime(update.Date.Year, update.Date.Month, update.Date.Day, update.EndDateTime.Hour, update.EndDateTime.Minute, update.EndDateTime.Second);
-                existedRequest.Description = update.Description;
                 existedRequest.Status = update.Status;
                 _requestRepo.Update(existedRequest);
                 _requestRepo.Commit();

@@ -27,6 +27,28 @@ namespace BAL.DAOs.Implementations
             _mapper = mapper;
         }
 
+        public List<GetSlot> CheckStatus(int key)
+        {
+            try
+            {
+                List<Slot> list = _slotRepo.GetAll().Include(s => s.Bookings).Where(s => s.LecturerId == key && s.Status != "Unactive").ToList();
+                foreach (var item in list)
+                {
+                    if(item.EndDatetime <= DateTime.Now)
+                    {
+                        item.Status = "Finish";
+                        _slotRepo.Update(item);
+                        _slotRepo.Commit();
+                    }
+                }
+                return _mapper.Map<List<GetSlot>>(list);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public void Create(CreateSlot create)
         {
             try
@@ -53,7 +75,7 @@ namespace BAL.DAOs.Implementations
                     StartDatetime = new DateTime(create.Date.Year, create.Date.Month, create.Date.Day, create.StartDateTime.Hour, create.StartDateTime.Minute, create.StartDateTime.Second),
                     EndDatetime = new DateTime(create.Date.Year, create.Date.Month, create.Date.Day, create.EndDateTime.Hour, create.EndDateTime.Minute, create.EndDateTime.Second),
                     Mode = create.Mode,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = DateTime.Now,
                     Status = "Not Book",
                 };
                 _slotRepo.Insert(slot);
@@ -106,10 +128,6 @@ namespace BAL.DAOs.Implementations
             try
             {
                 List<GetSlot> list= _mapper.Map<List<GetSlot>>(_slotRepo.GetAll().Include(s => s.Bookings).Where(s => s.LecturerId == key));
-                if (list == null)
-                {
-                    throw new Exception("Doesn't have Slot.");
-                }
                 return list;
             }
             catch (Exception ex)

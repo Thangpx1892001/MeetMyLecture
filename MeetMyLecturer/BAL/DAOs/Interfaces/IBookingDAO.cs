@@ -15,5 +15,6 @@ namespace BAL.DAOs.Interfaces
         public void CreateByCode(CreateByCode createByCode);
         public void Update(int key, UpdateBooking update);
         public void Delete(int key);
+        public List<GetBooking> CheckStatus(int key);
     }
 }

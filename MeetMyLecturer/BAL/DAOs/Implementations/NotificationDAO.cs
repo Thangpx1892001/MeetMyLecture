@@ -43,7 +43,7 @@ namespace BAL.DAOs.Implementations
                     BookingId = create.BookingId,
                     Title = create.Title,
                     IsRead = false,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = DateTime.Now,
                 };
                 _notificationRepo.Insert(notification);
                 _notificationRepo.Commit();

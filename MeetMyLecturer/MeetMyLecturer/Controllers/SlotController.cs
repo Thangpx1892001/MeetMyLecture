@@ -1,4 +1,5 @@
-﻿using BAL.DAOs.Implementations;
+﻿using BAL.Authentications;
+using BAL.DAOs.Implementations;
 using BAL.DAOs.Interfaces;
 using BAL.DTOs.Requests;
 using BAL.DTOs.Slots;
@@ -19,11 +20,13 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpGet("GetAllById/{id}")]
+        //[PermissionAuthorize("Lecturer", "Student")]
         public IActionResult GetAllById(int id)
         {
             try
             {
-                List<GetSlot> slots = _slotDAO.GetAllById(id);
+                List<GetSlot> slots = _slotDAO.CheckStatus(id);
+                slots = _slotDAO.GetAllById(id);
                 return Ok(new
                 {
                     Data = slots
@@ -39,6 +42,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpGet("{id}")]
+        //[PermissionAuthorize("Lecturer")]
         public IActionResult Get(int id)
         {
             try
@@ -59,6 +63,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPost]
+        //[PermissionAuthorize("Lecturer")]
         public IActionResult Post([FromBody] CreateSlot create)
         {
             try
@@ -77,6 +82,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpPut("{id}")]
+        //[PermissionAuthorize("Lecturer")]
         public IActionResult Put(int id, [FromBody] UpdateSlot update)
         {
             try
@@ -95,6 +101,7 @@ namespace MeetMyLecturer.Controllers
         }
 
         [HttpDelete("{id}")]
+        //[PermissionAuthorize("Lecturer")]
         public IActionResult Delete(int id)
         {
             try

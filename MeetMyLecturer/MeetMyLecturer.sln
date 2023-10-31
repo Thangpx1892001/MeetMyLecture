@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAL", "BAL\BAL.csproj", "{6FF8D27C-2C2F-48A6-9212-B159FA5CEFD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetMyLecturerClient", "MeetMyLecturerClient\MeetMyLecturerClient.csproj", "{8191DE2D-B038-4236-AFEC-4C7DF599E56A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{6FF8D27C-2C2F-48A6-9212-B159FA5CEFD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FF8D27C-2C2F-48A6-9212-B159FA5CEFD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FF8D27C-2C2F-48A6-9212-B159FA5CEFD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8191DE2D-B038-4236-AFEC-4C7DF599E56A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8191DE2D-B038-4236-AFEC-4C7DF599E56A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8191DE2D-B038-4236-AFEC-4C7DF599E56A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8191DE2D-B038-4236-AFEC-4C7DF599E56A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
