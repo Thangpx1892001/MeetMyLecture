@@ -11,7 +11,7 @@ public partial class Notification
 
     public string Title { get; set; } = null!;
 
-    public DateTime Time { get; set; }
+    public DateTime? Time { get; set; }
 
     public bool IsRead { get; set; }
 

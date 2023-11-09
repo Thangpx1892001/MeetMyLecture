@@ -16,7 +16,7 @@ namespace BAL.DTOs.Slots
 
         public List<int> BookingId { get; set; }
 
-        public string Title { get; set; }
+        public List<int> SubjectId { get; set; }
 
         public string Location { get; set; }
 

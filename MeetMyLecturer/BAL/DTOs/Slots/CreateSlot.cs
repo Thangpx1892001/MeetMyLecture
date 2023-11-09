@@ -12,9 +12,6 @@ namespace BAL.DTOs.Slots
     {
         public int LecturerId { get; set; }
 
-        [Required(ErrorMessage = "Title is required.")]
-        public string Title { get; set; }
-
         [Required(ErrorMessage = "Location is required.")]
         public string Location { get; set; }
 
