@@ -225,9 +225,6 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");
-            entity.Property(e => e.Title)
-                .HasMaxLength(255)
-                .HasColumnName("title");
 
             entity.HasOne(d => d.Lecturer).WithMany(p => p.Slots)
                 .HasForeignKey(d => d.LecturerId)
@@ -254,25 +251,6 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.SubjectCode)
                 .HasMaxLength(50)
                 .HasColumnName("subject_code");
-
-            entity.HasMany(d => d.Lecturers).WithMany(p => p.Subjects)
-                .UsingEntity<Dictionary<string, object>>(
-                    "SubjectLecturer",
-                    r => r.HasOne<Account>().WithMany()
-                        .HasForeignKey("LecturerId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_Subject_Lecturer_Account"),
-                    l => l.HasOne<Subject>().WithMany()
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_Subject_Lecturer_Subject"),
-                    j =>
-                    {
-                        j.HasKey("SubjectId", "LecturerId").HasName("PK__Subject___5D49EBCB92CB194C");
-                        j.ToTable("Subject_Lecturer");
-                        j.IndexerProperty<int>("SubjectId").HasColumnName("subject_id");
-                        j.IndexerProperty<int>("LecturerId").HasColumnName("lecturer_id");
-                    });
         });
 
         OnModelCreatingPartial(modelBuilder);

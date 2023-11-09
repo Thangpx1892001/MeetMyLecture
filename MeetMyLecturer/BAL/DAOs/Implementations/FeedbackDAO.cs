@@ -18,12 +18,14 @@ namespace BAL.DAOs.Implementations
     {
         private BookingRepository _bookingRepo;
         private FeedbackRepository _feedbackRepo;
+        private NotificationRepository _notificationRepo;
         private IMapper _mapper;
 
-        public FeedbackDAO(IBookingRepository bookingRepo, IFeedbackRepository feedbackRepo, IMapper mapper)
+        public FeedbackDAO(IBookingRepository bookingRepo, IFeedbackRepository feedbackRepo, INotificationRepository notificationRepo, IMapper mapper)
         {
             _bookingRepo = (BookingRepository)bookingRepo;
             _feedbackRepo = (FeedbackRepository)feedbackRepo;
+            _notificationRepo = (NotificationRepository)notificationRepo;
             _mapper = mapper;
         }
 
@@ -31,10 +33,16 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                var checkBookingId = _bookingRepo.GetByID(create.BookingId);
+                var checkBookingId = _bookingRepo.GetAll().Include(b => b.Slot).FirstOrDefault(b => b.Id == create.BookingId);
                 if (checkBookingId == null)
                 {
                     throw new Exception("Booking Id does not exist in the system.");
+                }
+
+                var checkFeedBackId = _feedbackRepo.GetAll().FirstOrDefault(f => f.BookingId == create.BookingId);
+                if (checkFeedBackId != null)
+                {
+                    throw new Exception("Feedback already exist in the system.");
                 }
 
                 Feedback feedback = new Feedback()
@@ -46,6 +54,16 @@ namespace BAL.DAOs.Implementations
                 _feedbackRepo.Insert(feedback);
                 _feedbackRepo.Commit();
 
+                Notification notification = new Notification()
+                {
+                    BookingId = checkBookingId.Id,
+                    Title = "You received a feedback Location: " + checkBookingId.Slot.Location + " " + checkBookingId.Slot.StartDatetime.TimeOfDay + " - " + checkBookingId.Slot.EndDatetime.TimeOfDay + " " +
+                            checkBookingId.Slot.StartDatetime.Date,
+                    IsRead = false,
+                    CreatedAt = DateTime.Now,
+                };
+                _notificationRepo.Insert(notification);
+                _notificationRepo.Commit();
             }
             catch (Exception ex)
             {

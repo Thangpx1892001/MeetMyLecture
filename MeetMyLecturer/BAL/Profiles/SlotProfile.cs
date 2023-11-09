@@ -13,7 +13,8 @@ namespace BAL.Profiles
     {
         public SlotProfile()
         {
-            CreateMap<Slot, GetSlot>().ForMember(dept => dept.BookingId, opts => opts.MapFrom(src => src.Bookings.Where(s => s.Status == "Success").Select(s => s.Id))).ReverseMap();
+            CreateMap<Slot, GetSlot>().ForMember(dept => dept.BookingId, opts => opts.MapFrom(src => src.Bookings.Where(s => s.Status == "Success").Select(s => s.Id)))
+                                      .ForMember(dept => dept.SubjectId, opts => opts.MapFrom(src => src.Bookings.Where(s => s.Status == "Success").Select(s => s.SubjectId).Distinct())).ReverseMap();
         }
     }
 }

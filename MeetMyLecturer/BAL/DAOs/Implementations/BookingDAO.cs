@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BAL.DAOs.Implementations
@@ -24,15 +25,17 @@ namespace BAL.DAOs.Implementations
         private SubjectRepository _subjectRepo;
         private AccountRepository _AccountRepo;
         private SlotRepository _slotRepo;
+        private NotificationRepository _notificationRepo;
         private IMapper _mapper;
 
-        public BookingDAO(IBookingRepository bookingRepo, ISubjectRepository subjectRepo, 
-            IAccountRepository accountRepo, ISlotRepository slotRepo, IMapper mapper)
+        public BookingDAO(IBookingRepository bookingRepo, ISubjectRepository subjectRepo, IAccountRepository accountRepo, 
+                        ISlotRepository slotRepo, INotificationRepository notificationRepo, IMapper mapper)
         {
             _bookingRepo = (BookingRepository)bookingRepo;
             _subjectRepo = (SubjectRepository)subjectRepo;
             _AccountRepo = (AccountRepository)accountRepo;
             _slotRepo = (SlotRepository)slotRepo;
+            _notificationRepo = (NotificationRepository)notificationRepo;
             _mapper = mapper;
         }
 
@@ -44,7 +47,14 @@ namespace BAL.DAOs.Implementations
                                                 .Where(b => b.StudentId == key && b.Status != "Denied").ToList();
                 foreach (var item in list)
                 {
-                    if (item.Slot.EndDatetime <= DateTime.Now)
+                    if (item.Slot.EndDatetime <= DateTime.Now && item.Status == "Pending")
+                    {
+                        item.Status = "Denied";
+                        item.Reason = "Slot is finish";
+                        _bookingRepo.Update(item);
+                        _bookingRepo.Commit();
+                    }
+                    else if (item.Slot.EndDatetime <= DateTime.Now)
                     {
                         item.Status = "Finish";
                         _bookingRepo.Update(item);
@@ -71,7 +81,7 @@ namespace BAL.DAOs.Implementations
                 var countBooking = checkBookings.Count();
                 if (countBooking == checkSlotId.LimitBooking)
                 {
-                    throw new Exception("Slot is full in the system.");
+                    throw new Exception("Slot is full.");
                 }
 
                 if (checkStudentId == null)
@@ -92,7 +102,7 @@ namespace BAL.DAOs.Implementations
                 var checkBooking = _bookingRepo.GetAll().FirstOrDefault(b => b.StudentId == create.StudentId && b.SlotId == create.SlotId);
                 if (checkBooking != null)
                 {
-                    throw new Exception("You book slot already.");
+                    throw new Exception("You book this slot already.");
                 }
 
                 if (create.Status.IsNullOrEmpty()) { 
@@ -107,6 +117,18 @@ namespace BAL.DAOs.Implementations
                     };
                     _bookingRepo.Insert(booking);
                     _bookingRepo.Commit();
+
+                    Notification notification = new Notification() 
+                    { 
+                        BookingId = booking.Id,
+                        Title = checkStudentId.Fullname +" pending approval a booking slot Location: " + checkSlotId.Location + " " + 
+                                checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
+                                checkSlotId.StartDatetime.Date,
+                        IsRead = false,
+                        CreatedAt = DateTime.Now,
+                    };
+                    _notificationRepo.Insert(notification);
+                    _notificationRepo.Commit();
                 }
                 else
                 {
@@ -121,6 +143,18 @@ namespace BAL.DAOs.Implementations
                     };
                     _bookingRepo.Insert(booking);
                     _bookingRepo.Commit();
+
+                    Notification notification = new Notification()
+                    {
+                        BookingId = booking.Id,
+                        Title = booking.Slot.Lecturer.Fullname +" accepted your request Location: " + checkSlotId.Location + " " +
+                                checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
+                                checkSlotId.StartDatetime.Date,
+                        IsRead = false,
+                        CreatedAt = DateTime.Now,
+                    };
+                    _notificationRepo.Insert(notification);
+                    _notificationRepo.Commit();
                 }
             }
             catch (Exception ex)
@@ -189,7 +223,7 @@ namespace BAL.DAOs.Implementations
                 }
                 else
                 {
-                    throw new Exception("Slot is full in the system.");
+                    throw new Exception("Slot is full.");
                 }
             }
             catch (Exception ex)
@@ -252,7 +286,7 @@ namespace BAL.DAOs.Implementations
             try
             {
                 var checkStudentId = _AccountRepo.GetByID(update.StudentId);
-                var checkSlotId = _slotRepo.GetByID(update.SlotId);
+                var checkSlotId = _slotRepo.GetAll().Include(s => s.Lecturer).FirstOrDefault(s => s.Id == update.SlotId);
                 var checkSubjectId = _subjectRepo.GetByID(update.SubjectId);
                 if (checkStudentId == null)
                 {
@@ -283,7 +317,34 @@ namespace BAL.DAOs.Implementations
                 existedBooking.Status = update.Status;
                 _bookingRepo.Update(existedBooking);
                 _bookingRepo.Commit();
-
+                if (existedBooking.Status.Equals("Success"))
+                {
+                    Notification notification = new Notification()
+                    {
+                        BookingId = existedBooking.Id,
+                        Title = checkSlotId.Lecturer.Fullname +" accepted a booking slot Location: " + checkSlotId.Location + " " +
+                        checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
+                        checkSlotId.StartDatetime.Date,
+                        IsRead = false,
+                        CreatedAt = DateTime.Now,
+                    };
+                    _notificationRepo.Insert(notification);
+                    _notificationRepo.Commit();
+                }
+                if (existedBooking.Status.Equals("Denied"))
+                {
+                    Notification notification = new Notification()
+                    {
+                        BookingId = existedBooking.Id,
+                        Title = checkSlotId.Lecturer.Fullname +" denied a booking slot Location: " + checkSlotId.Location + " " +
+                        checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
+                        checkSlotId.StartDatetime.Date + " Reason: " + existedBooking.Reason,
+                        IsRead = false,
+                        CreatedAt = DateTime.Now,
+                    };
+                    _notificationRepo.Insert(notification);
+                    _notificationRepo.Commit();
+                }
                 List<Booking> bookings = _bookingRepo.GetAll().Where(b => b.SlotId == checkSlotId.Id && b.Status == "Success").ToList();
                 var countBooking = bookings.Count();
                 if (countBooking == checkSlotId.LimitBooking)
@@ -300,6 +361,17 @@ namespace BAL.DAOs.Implementations
                             booking.Reason = "Slot is full";
                             _bookingRepo.Update(booking);
                             _bookingRepo.Commit();
+                            Notification notification = new Notification()
+                            {
+                                BookingId = existedBooking.Id,
+                                Title = checkSlotId.Lecturer.Fullname +" denied a booking slot Location: " + checkSlotId.Location + " " +
+                                        checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
+                                        checkSlotId.StartDatetime.Date + " Reason: " + booking.Reason,
+                                IsRead = false,
+                                CreatedAt = DateTime.Now,
+                            };
+                            _notificationRepo.Insert(notification);
+                            _notificationRepo.Commit();
                         }
                     }
                 }

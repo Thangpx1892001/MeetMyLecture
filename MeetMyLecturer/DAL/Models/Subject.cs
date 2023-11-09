@@ -18,6 +18,4 @@ public partial class Subject
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
-
-    public virtual ICollection<Account> Lecturers { get; set; } = new List<Account>();
 }

@@ -28,6 +28,4 @@ public partial class Account
     public virtual ICollection<Request> RequestStudents { get; set; } = new List<Request>();
 
     public virtual ICollection<Slot> Slots { get; set; } = new List<Slot>();
-
-    public virtual ICollection<Subject> Subjects { get; set; } = new List<Subject>();
 }

@@ -54,9 +54,22 @@ namespace BAL.DAOs.Implementations
             try
             {
                 var checkAccountId = _AccountRepo.GetByID(create.LecturerId);
+                var checkSlot = _slotRepo.GetAll().Where(s => s.LecturerId == create.LecturerId && s.StartDatetime == create.StartDateTime);
+                var checkLocation = _slotRepo.GetAll().Where(s => s.Location == create.Location && s.StartDatetime == create.StartDateTime);
+                
+                if (checkSlot != null)
+                {
+                    throw new Exception("The start time overlaps with the start time from another slot.");
+                }
+
                 if (checkAccountId == null)
                 {
                     throw new Exception("Account Id does not exist in the system.");
+                }
+
+                if (checkLocation != null)
+                {
+                    throw new Exception("The location and start time overlaps with another lecturer's slot.");
                 }
 
                 TimeSpan duration = create.EndDateTime.Subtract(create.StartDateTime);
@@ -68,7 +81,6 @@ namespace BAL.DAOs.Implementations
                 Slot slot = new Slot()
                 {
                     LecturerId = create.LecturerId,
-                    Title = create.Title,
                     Location = create.Location,
                     Code = create.Code,
                     LimitBooking = create.LimitBooking,
@@ -159,7 +171,6 @@ namespace BAL.DAOs.Implementations
                 }
 
                 existedSlot.LecturerId = update.LecturerId;
-                existedSlot.Title = update.Title;
                 existedSlot.Location = update.Location;
                 existedSlot.Code = update.Code;
                 existedSlot.LimitBooking = update.LimitBooking;
