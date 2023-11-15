@@ -25,8 +25,7 @@ namespace MeetMyLecturer.Controllers
         {
             try
             {
-                List<GetBooking> bookings = _bookingDAO.CheckStatus(id);
-                bookings = _bookingDAO.GetAllById(id);
+                List<GetBooking> bookings = _bookingDAO.GetAllById(id);
                 return Ok(new
                 {
                     Data = bookings
