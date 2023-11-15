@@ -124,7 +124,7 @@ namespace BAL.DAOs.Implementations
                         BookingId = getBooking.Id,
                         Title = checkStudentId.Fullname +" pending approval a booking slot Location: " + getBooking.Slot.Location + " " + 
                                 checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.TimeOfDay + " - " + getBooking.Slot.EndDatetime.TimeOfDay + " " +
-                                getBooking.Slot.StartDatetime.Date,
+                                getBooking.Slot.StartDatetime.ToString("dd/MM/yyyy"),
                         IsRead = false,
                         CreatedAt = DateTime.Now,
                     };
@@ -151,7 +151,7 @@ namespace BAL.DAOs.Implementations
                         BookingId = getBooking.Id,
                         Title = getBooking.Slot.Lecturer.Fullname + " accepted your request Location: " + getBooking.Slot.Location + " " +
                                 checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.TimeOfDay + " - " + getBooking.Slot.EndDatetime.TimeOfDay + " " +
-                                getBooking.Slot.StartDatetime.Date,
+                                getBooking.Slot.StartDatetime.ToString("dd/MM/yyyy"),
                         IsRead = false,
                         CreatedAt = DateTime.Now,
                     };
@@ -325,7 +325,7 @@ namespace BAL.DAOs.Implementations
                         BookingId = existedBooking.Id,
                         Title = checkSlotId.Lecturer.Fullname +" accepted a booking slot Location: " + checkSlotId.Location + " " +
                         checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
-                        checkSlotId.StartDatetime.Date,
+                        checkSlotId.StartDatetime.ToString("dd/MM/yyyy"),
                         IsRead = false,
                         CreatedAt = DateTime.Now,
                     };
@@ -339,7 +339,7 @@ namespace BAL.DAOs.Implementations
                         BookingId = existedBooking.Id,
                         Title = checkSlotId.Lecturer.Fullname +" denied a booking slot Location: " + checkSlotId.Location + " " +
                         checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
-                        checkSlotId.StartDatetime.Date + " Reason: " + existedBooking.Reason,
+                        checkSlotId.StartDatetime.ToString("dd/MM/yyyy") + " Reason: " + existedBooking.Reason,
                         IsRead = false,
                         CreatedAt = DateTime.Now,
                     };
@@ -367,7 +367,7 @@ namespace BAL.DAOs.Implementations
                                 BookingId = existedBooking.Id,
                                 Title = checkSlotId.Lecturer.Fullname +" denied a booking slot Location: " + checkSlotId.Location + " " +
                                         checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
-                                        checkSlotId.StartDatetime.Date + " Reason: " + booking.Reason,
+                                        checkSlotId.StartDatetime.ToString("dd/MM/yyyy") + " Reason: " + booking.Reason,
                                 IsRead = false,
                                 CreatedAt = DateTime.Now,
                             };

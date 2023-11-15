@@ -54,13 +54,15 @@ namespace BAL.DAOs.Implementations
             try
             {
                 var checkAccountId = _AccountRepo.GetByID(create.LecturerId);
-                var checkSlot = _slotRepo.GetAll().FirstOrDefault(s => s.LecturerId == create.LecturerId && s.Status == "Not Book" && s.StartDatetime.Date == create.Date && s.StartDatetime.TimeOfDay == create.StartDateTime.TimeOfDay);
+                var checkSlot = _slotRepo.GetAll().FirstOrDefault(s => s.LecturerId == create.LecturerId && s.Status == "Not Book" && s.StartDatetime.Date == create.Date && s.StartDatetime.TimeOfDay == create.StartDateTime.TimeOfDay
+                                                                || s.Location == create.Location && s.StartDatetime.Date == create.Date && s.EndDatetime.TimeOfDay >= create.StartDateTime.TimeOfDay);
                 var listLocation = _slotRepo.GetAll().Where(s => s.Location != "Google Meet" && s.Status == "Not Book");
-                var checkLocation = listLocation.FirstOrDefault(s => s.Location == create.Location && s.StartDatetime.Date == create.Date && s.StartDatetime.TimeOfDay == create.StartDateTime.TimeOfDay);
+                var checkLocation = listLocation.FirstOrDefault(s => s.Location == create.Location && s.StartDatetime.Date == create.Date && s.StartDatetime.TimeOfDay == create.StartDateTime.TimeOfDay
+                                                               || s.Location == create.Location && s.StartDatetime.Date == create.Date && s.EndDatetime.TimeOfDay >= create.StartDateTime.TimeOfDay);
                 
                 if (checkSlot != null)
                 {
-                    throw new Exception("The start time overlaps with the start time from another slot.");
+                    throw new Exception("Time overlaps with the start time from another slot.");
                 }
 
                 if (checkAccountId == null)
@@ -70,7 +72,7 @@ namespace BAL.DAOs.Implementations
 
                 if (checkLocation != null)
                 {
-                    throw new Exception("The location and start time overlaps with another lecturer's slot.");
+                    throw new Exception("The location or time overlaps with another lecturer's slot.");
                 }
 
                 TimeSpan duration = create.EndDateTime.Subtract(create.StartDateTime);
