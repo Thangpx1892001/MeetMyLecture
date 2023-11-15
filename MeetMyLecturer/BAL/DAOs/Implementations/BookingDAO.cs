@@ -105,7 +105,7 @@ namespace BAL.DAOs.Implementations
                     throw new Exception("You book this slot already.");
                 }
 
-                if (create.Status.IsNullOrEmpty()) { 
+                if (String.IsNullOrEmpty(create.Status)) { 
                     Booking booking = new Booking()
                     {
                         StudentId = create.StudentId,
@@ -118,12 +118,13 @@ namespace BAL.DAOs.Implementations
                     _bookingRepo.Insert(booking);
                     _bookingRepo.Commit();
 
+                    var getBooking = _bookingRepo.GetAll().Include(b => b.Slot).FirstOrDefault(b => b.Id == booking.Id);
                     Notification notification = new Notification() 
                     { 
-                        BookingId = booking.Id,
-                        Title = checkStudentId.Fullname +" pending approval a booking slot Location: " + checkSlotId.Location + " " + 
-                                checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
-                                checkSlotId.StartDatetime.Date,
+                        BookingId = getBooking.Id,
+                        Title = checkStudentId.Fullname +" pending approval a booking slot Location: " + getBooking.Slot.Location + " " + 
+                                checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.TimeOfDay + " - " + getBooking.Slot.EndDatetime.TimeOfDay + " " +
+                                getBooking.Slot.StartDatetime.Date,
                         IsRead = false,
                         CreatedAt = DateTime.Now,
                     };
@@ -144,12 +145,13 @@ namespace BAL.DAOs.Implementations
                     _bookingRepo.Insert(booking);
                     _bookingRepo.Commit();
 
+                    var getBooking = _bookingRepo.GetAll().Include(b => b.Slot).ThenInclude(s => s.Lecturer).FirstOrDefault(b => b.Id == booking.Id);
                     Notification notification = new Notification()
                     {
-                        BookingId = booking.Id,
-                        Title = booking.Slot.Lecturer.Fullname +" accepted your request Location: " + checkSlotId.Location + " " +
-                                checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
-                                checkSlotId.StartDatetime.Date,
+                        BookingId = getBooking.Id,
+                        Title = getBooking.Slot.Lecturer.Fullname + " accepted your request Location: " + getBooking.Slot.Location + " " +
+                                checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.TimeOfDay + " - " + getBooking.Slot.EndDatetime.TimeOfDay + " " +
+                                getBooking.Slot.StartDatetime.Date,
                         IsRead = false,
                         CreatedAt = DateTime.Now,
                     };
@@ -167,7 +169,6 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-
                 var checkStudentId = _AccountRepo.GetByID(createByCode.StudentId);
                 var checkSlotId = _slotRepo.GetByID(createByCode.SlotId);
                 var checkSubjectId = _subjectRepo.GetByID(createByCode.SubjectId);

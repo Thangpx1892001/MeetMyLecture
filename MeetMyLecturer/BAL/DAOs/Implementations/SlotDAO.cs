@@ -31,7 +31,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<Slot> list = _slotRepo.GetAll().Include(s => s.Bookings).Where(s => s.LecturerId == key && s.Status != "Unactive").ToList();
+                List<Slot> list = _slotRepo.GetAll().Where(s => s.LecturerId == key && s.Status != "Unactive").ToList();
                 foreach (var item in list)
                 {
                     if(item.EndDatetime <= DateTime.Now)
@@ -54,8 +54,9 @@ namespace BAL.DAOs.Implementations
             try
             {
                 var checkAccountId = _AccountRepo.GetByID(create.LecturerId);
-                var checkSlot = _slotRepo.GetAll().Where(s => s.LecturerId == create.LecturerId && s.StartDatetime == create.StartDateTime);
-                var checkLocation = _slotRepo.GetAll().Where(s => s.Location == create.Location && s.StartDatetime == create.StartDateTime);
+                var checkSlot = _slotRepo.GetAll().FirstOrDefault(s => s.LecturerId == create.LecturerId && s.Status == "Not Book" && s.StartDatetime.Date == create.Date && s.StartDatetime.TimeOfDay == create.StartDateTime.TimeOfDay);
+                var listLocation = _slotRepo.GetAll().Where(s => s.Location != "Google Meet" && s.Status == "Not Book");
+                var checkLocation = listLocation.FirstOrDefault(s => s.Location == create.Location && s.StartDatetime.Date == create.Date && s.StartDatetime.TimeOfDay == create.StartDateTime.TimeOfDay);
                 
                 if (checkSlot != null)
                 {
