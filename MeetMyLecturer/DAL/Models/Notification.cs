@@ -9,6 +9,8 @@ public partial class Notification
 
     public int BookingId { get; set; }
 
+    public int? SendToId { get; set; }
+
     public string Title { get; set; } = null!;
 
     public DateTime? Time { get; set; }

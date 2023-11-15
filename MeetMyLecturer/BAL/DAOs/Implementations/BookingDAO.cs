@@ -122,6 +122,7 @@ namespace BAL.DAOs.Implementations
                     Notification notification = new Notification() 
                     { 
                         BookingId = getBooking.Id,
+                        SendToId = getBooking.Slot.LecturerId,
                         Title = checkStudentId.Fullname +" pending approval a booking slot Location: " + getBooking.Slot.Location + " " + 
                                 checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.TimeOfDay + " - " + getBooking.Slot.EndDatetime.TimeOfDay + " " +
                                 getBooking.Slot.StartDatetime.ToString("dd/MM/yyyy"),
@@ -149,6 +150,7 @@ namespace BAL.DAOs.Implementations
                     Notification notification = new Notification()
                     {
                         BookingId = getBooking.Id,
+                        SendToId = checkStudentId.Id,
                         Title = getBooking.Slot.Lecturer.Fullname + " accepted your request Location: " + getBooking.Slot.Location + " " +
                                 checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.TimeOfDay + " - " + getBooking.Slot.EndDatetime.TimeOfDay + " " +
                                 getBooking.Slot.StartDatetime.ToString("dd/MM/yyyy"),
@@ -213,6 +215,21 @@ namespace BAL.DAOs.Implementations
                     };
                     _bookingRepo.Insert(booking);
                     _bookingRepo.Commit();
+
+                    var getBooking = _bookingRepo.GetAll().Include(b => b.Slot).FirstOrDefault(b => b.Id == booking.Id);
+                    Notification notification = new Notification()
+                    {
+                        BookingId = getBooking.Id,
+                        SendToId = getBooking.Slot.LecturerId,
+                        Title = checkStudentId.Fullname + " join slot by code Location: " + getBooking.Slot.Location + " " +
+                                checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.TimeOfDay + " - " + getBooking.Slot.EndDatetime.TimeOfDay + " " +
+                                getBooking.Slot.StartDatetime.ToString("dd/MM/yyyy"),
+                        IsRead = false,
+                        CreatedAt = DateTime.Now,
+                    };
+                    _notificationRepo.Insert(notification);
+                    _notificationRepo.Commit();
+
                     bookings.Add(booking);
                     countBooking = bookings.Count();
                     if (countBooking == checkSlotId.LimitBooking)
@@ -323,6 +340,7 @@ namespace BAL.DAOs.Implementations
                     Notification notification = new Notification()
                     {
                         BookingId = existedBooking.Id,
+                        SendToId = checkStudentId.Id,
                         Title = checkSlotId.Lecturer.Fullname +" accepted a booking slot Location: " + checkSlotId.Location + " " +
                         checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
                         checkSlotId.StartDatetime.ToString("dd/MM/yyyy"),
@@ -337,6 +355,7 @@ namespace BAL.DAOs.Implementations
                     Notification notification = new Notification()
                     {
                         BookingId = existedBooking.Id,
+                        SendToId = checkStudentId.Id,
                         Title = checkSlotId.Lecturer.Fullname +" denied a booking slot Location: " + checkSlotId.Location + " " +
                         checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
                         checkSlotId.StartDatetime.ToString("dd/MM/yyyy") + " Reason: " + existedBooking.Reason,
@@ -365,6 +384,7 @@ namespace BAL.DAOs.Implementations
                             Notification notification = new Notification()
                             {
                                 BookingId = existedBooking.Id,
+                                SendToId = checkStudentId.Id,
                                 Title = checkSlotId.Lecturer.Fullname +" denied a booking slot Location: " + checkSlotId.Location + " " +
                                         checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
                                         checkSlotId.StartDatetime.ToString("dd/MM/yyyy") + " Reason: " + booking.Reason,
