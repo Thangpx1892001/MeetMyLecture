@@ -18,6 +18,8 @@ namespace BAL.DTOs.Notifications
 
         public GetSlot Slot { get; set; }
 
+        public int? SendToId { get; set; }
+
         public string Title { get; set; }
 
         public DateTime Time { get; set; }

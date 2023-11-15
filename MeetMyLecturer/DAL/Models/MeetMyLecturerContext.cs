@@ -146,6 +146,7 @@ public partial class MeetMyLecturerContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
             entity.Property(e => e.IsRead).HasColumnName("is_read");
+            entity.Property(e => e.SendToId).HasColumnName("send_to_id");
             entity.Property(e => e.Time)
                 .HasColumnType("datetime")
                 .HasColumnName("time");
