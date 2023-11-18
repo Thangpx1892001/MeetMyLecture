@@ -67,7 +67,7 @@ namespace BAL.DAOs.Implementations
 
                 if (checkAccountId == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Account does not exist in the system.");
                 }
 
                 if (checkLocation != null)
@@ -109,7 +109,7 @@ namespace BAL.DAOs.Implementations
                 Slot existedSlot = _slotRepo.GetByID(key);
                 if (existedSlot == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Slot does not exist in the system.");
                 }
                 existedSlot.Status = "Unactive";
                 _slotRepo.Update(existedSlot);
@@ -128,7 +128,7 @@ namespace BAL.DAOs.Implementations
                 Slot slot = _slotRepo.GetAll().Include(s => s.Bookings).FirstOrDefault(s => s.Id == key);
                 if (slot == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Slot does not exist in the system.");
                 }
                 return _mapper.Map<GetSlot>(slot);
             }
@@ -158,7 +158,7 @@ namespace BAL.DAOs.Implementations
                 var checkAccountId = _AccountRepo.GetByID(update.LecturerId);
                 if (checkAccountId == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Account does not exist in the system.");
                 }
 
                 TimeSpan duration = update.EndDateTime.Subtract(update.StartDateTime);
@@ -170,7 +170,7 @@ namespace BAL.DAOs.Implementations
                 Slot existedSlot = _slotRepo.GetByID(key);
                 if (existedSlot == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Slot does not exist in the system.");
                 }
 
                 existedSlot.LecturerId = update.LecturerId;

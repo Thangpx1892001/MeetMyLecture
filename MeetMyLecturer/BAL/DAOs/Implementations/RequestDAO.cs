@@ -37,17 +37,17 @@ namespace BAL.DAOs.Implementations
                 var checkSubjectId = _subjectRepo.GetByID(create.SubjectId);
                 if (checkStudentId == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Account does not exist in the system.");
                 }
 
                 if (checkLecturerId == null)
                 {
-                    throw new Exception("Lecturer Id does not exist in the system.");
+                    throw new Exception("Lecturer does not exist in the system.");
                 }
 
                 if (checkSubjectId == null)
                 {
-                    throw new Exception("Subject Id does not exist in the system.");
+                    throw new Exception("Subject does not exist in the system.");
                 }
 
                 Request request = new Request()
@@ -76,7 +76,7 @@ namespace BAL.DAOs.Implementations
                 Request existedRequest = _requestRepo.GetByID(key);
                 if (existedRequest == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Request does not exist in the system.");
                 }
                 existedRequest.Status = "Cancel";
                 _requestRepo.Update(existedRequest);
@@ -95,7 +95,7 @@ namespace BAL.DAOs.Implementations
                 Request request = _requestRepo.GetByID(key);
                 if (request == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Request does not exist in the system.");
                 }
                 return _mapper.Map<GetRequest>(request);
             }
@@ -127,23 +127,23 @@ namespace BAL.DAOs.Implementations
                 var checkSubjectId = _subjectRepo.GetByID(update.SubjectId);
                 if (checkStudentId == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Account does not exist in the system.");
                 }
 
                 if (checkLecturerId == null)
                 {
-                    throw new Exception("Lecturer Id does not exist in the system.");
+                    throw new Exception("Lecturer does not exist in the system.");
                 }
 
                 if (checkSubjectId == null)
                 {
-                    throw new Exception("Subject Id does not exist in the system.");
+                    throw new Exception("Subject does not exist in the system.");
                 }
 
                 Request existedRequest = _requestRepo.GetByID(key);
                 if (existedRequest == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Request does not exist in the system.");
                 }
 
                 existedRequest.StudentId = update.StudentId;

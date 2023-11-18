@@ -29,6 +29,6 @@ namespace BAL.DTOs.Accounts
         [Required(ErrorMessage = "Role is required.")]
         public string Role { get; set; }
 
-        //public List<int> SubjectId { get; set; }
+        public List<int> SubjectId { get; set; }
     }
 }

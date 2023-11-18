@@ -51,7 +51,7 @@ namespace BAL.DAOs.Implementations
                 Subject existedSubject = _SubjectRepo.GetByID(key);
                 if (existedSubject == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Subject does not exist in the system.");
                 }
                 existedSubject.Status = "Unactive";
                 _SubjectRepo.Update(existedSubject);
@@ -70,7 +70,7 @@ namespace BAL.DAOs.Implementations
                 Subject subject = _SubjectRepo.GetByID(key);
                 if (subject == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Subject does not exist in the system.");
                 }
                 return _mapper.Map<GetSubject>(subject);
             }
@@ -100,7 +100,7 @@ namespace BAL.DAOs.Implementations
                 Subject existedSubject = _SubjectRepo.GetByID(key);
                 if (existedSubject == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Subject does not exist in the system.");
                 }
 
                 existedSubject.SubjectCode = update.SubjectCode;

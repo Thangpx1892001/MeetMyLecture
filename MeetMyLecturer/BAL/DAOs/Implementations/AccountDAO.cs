@@ -5,6 +5,7 @@ using BAL.DTOs.Authentications;
 using DAL.Models;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -64,29 +65,29 @@ namespace BAL.DAOs.Implementations
                 _AccountRepo.Insert(account);
                 _AccountRepo.Commit();
 
-                //if (checkRole == 1)
-                //{
-                //    List<Subject> listSubject = new List<Subject>();
-                //    var listSubjectId = create.SubjectId;
-                //    if (listSubjectId != null)
-                //    {
-                //        foreach (var id in listSubjectId)
-                //        {
-                //            var checkId = _SubjectRepo.GetByID(id);
-                //            if (checkId == null)
-                //            {
-                //                throw new Exception("Subject Id does not exist in the system.");
-                //            }
-                //            listSubject.Add(checkId);
-                //        }
-                //    }
-                //    foreach (var item in listSubject)
-                //    {
-                //        item.Lecturers.Add(account);
-                //        _SubjectRepo.Update(item);
-                //        _SubjectRepo.Commit();
-                //    }
-                //}
+                if (checkRole == 1)
+                {
+                    List<Subject> listSubject = new List<Subject>();
+                    //var listSubjectId = create.SubjectId;
+                    if (create.SubjectId != null)
+                    {
+                        foreach (var id in create.SubjectId)
+                        {
+                            var checkId = _SubjectRepo.GetByID(id);
+                            if (checkId == null)
+                            {
+                                throw new Exception("Subject does not exist in the system.");
+                            }
+                            listSubject.Add(checkId);
+                        }
+                        foreach (var item in listSubject)
+                        {
+                            item.Lecturers.Add(account);
+                            _SubjectRepo.Update(item);
+                            _SubjectRepo.Commit();
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -101,7 +102,7 @@ namespace BAL.DAOs.Implementations
                 Account existedAccount = _AccountRepo.GetByID(key);
                 if (existedAccount == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Account does not exist in the system.");
                 }
 
                 existedAccount.Status = "Unactive";
@@ -121,7 +122,7 @@ namespace BAL.DAOs.Implementations
                 Account account = _AccountRepo.GetByID(key);
                 if (account == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Account does not exist in the system.");
                 }
                 return _mapper.Map<GetAccount>(account);
             }
@@ -148,22 +149,10 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                //List<Subject> listSubject = new List<Subject>();
-                //var listSubjectId = update.SubjectId;
-                //foreach (var id in listSubjectId)
-                //{
-                //    var checkId = _SubjectRepo.GetByID(id);
-                //    if (checkId == null)
-                //    {
-                //        throw new Exception("Subject Id does not exist in the system.");
-                //    }
-                //    listSubject.Add(checkId);
-                //}
-
                 Account existedAccount = _AccountRepo.GetByID(key);
                 if (existedAccount == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Account does not exist in the system.");
                 }
 
                 existedAccount.Username = update.Username;
@@ -172,16 +161,32 @@ namespace BAL.DAOs.Implementations
                 existedAccount.Dob = update.Dob;
                 existedAccount.Fullname = update.Fullname;
                 existedAccount.Role = update.Role;
-                //existedAccount.Subjects.Clear();
+                existedAccount.Subjects.Clear();
                 _AccountRepo.Update(existedAccount);
                 _AccountRepo.Commit();
 
-                //foreach (var item in listSubject)
-                //{
-                //    item.Lecturers.Add(existedAccount);
-                //    _SubjectRepo.Update(item);
-                //    _SubjectRepo.Commit();
-                //}
+                if (existedAccount.Role == "Lecturer")
+                {
+                    List<Subject> listSubject = new List<Subject>();
+                    if (update.SubjectId != null)
+                    {
+                        foreach (var id in update.SubjectId)
+                        {
+                            var checkId = _SubjectRepo.GetByID(id);
+                            if (checkId == null)
+                            {
+                                throw new Exception("Subject does not exist in the system.");
+                            }
+                            listSubject.Add(checkId);
+                        }
+                    }
+                    foreach (var item in listSubject)
+                    {
+                        item.Lecturers.Add(existedAccount);
+                        _SubjectRepo.Update(item);
+                        _SubjectRepo.Commit();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -194,7 +199,7 @@ namespace BAL.DAOs.Implementations
             try
             {
                 Account existedAccount = _AccountRepo.GetAll()
-                    .Where(x => x.Email == authenAccount.Email && x.Password.Equals(authenAccount.Password)).FirstOrDefault();
+                    .FirstOrDefault(x => x.Email == authenAccount.Email && x.Password.Equals(authenAccount.Password));
 
                 if (existedAccount == null)
                 {
