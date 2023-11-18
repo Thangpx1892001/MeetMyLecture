@@ -35,7 +35,7 @@ namespace BAL.DAOs.Implementations
                 var checkBookingId = _bookingRepo.GetByID(create.BookingId);
                 if (checkBookingId == null)
                 {
-                    throw new Exception("Booking Id does not exist in the system.");
+                    throw new Exception("Booking does not exist in the system.");
                 }
 
                 Notification notification = new Notification()
@@ -62,7 +62,7 @@ namespace BAL.DAOs.Implementations
                 Notification notification = _notificationRepo.GetByID(key);
                 if (notification == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Notification does not exist in the system.");
                 }
                 return _mapper.Map<GetNotification>(notification);
             }
@@ -93,13 +93,13 @@ namespace BAL.DAOs.Implementations
                 var checkBookingId = _bookingRepo.GetByID(update.BookingId);
                 if (checkBookingId == null)
                 {
-                    throw new Exception("Booking Id does not exist in the system.");
+                    throw new Exception("Booking does not exist in the system.");
                 }
 
                 Notification existedNotification = _notificationRepo.GetByID(key);
                 if (existedNotification == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Notification does not exist in the system.");
                 }
 
                 existedNotification.BookingId = update.BookingId;

@@ -252,6 +252,25 @@ public partial class MeetMyLecturerContext : DbContext
             entity.Property(e => e.SubjectCode)
                 .HasMaxLength(50)
                 .HasColumnName("subject_code");
+
+            entity.HasMany(d => d.Lecturers).WithMany(p => p.Subjects)
+                .UsingEntity<Dictionary<string, object>>(
+                    "SubjectLecturer",
+                    r => r.HasOne<Account>().WithMany()
+                        .HasForeignKey("LecturerId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_Subject_Lecturer_Account"),
+                    l => l.HasOne<Subject>().WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_Subject_Lecturer_Subject"),
+                    j =>
+                    {
+                        j.HasKey("SubjectId", "LecturerId").HasName("PK_SubjectLecturer");
+                        j.ToTable("Subject_Lecturer");
+                        j.IndexerProperty<int>("SubjectId").HasColumnName("subject_id");
+                        j.IndexerProperty<int>("LecturerId").HasColumnName("lecturer_id");
+                    });
         });
 
         OnModelCreatingPartial(modelBuilder);

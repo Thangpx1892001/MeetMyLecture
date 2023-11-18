@@ -36,7 +36,7 @@ namespace BAL.DAOs.Implementations
                 var checkBookingId = _bookingRepo.GetAll().Include(b => b.Slot).FirstOrDefault(b => b.Id == create.BookingId);
                 if (checkBookingId == null)
                 {
-                    throw new Exception("Booking Id does not exist in the system.");
+                    throw new Exception("Booking does not exist in the system.");
                 }
 
                 var checkFeedBackId = _feedbackRepo.GetAll().FirstOrDefault(f => f.BookingId == create.BookingId);
@@ -78,7 +78,7 @@ namespace BAL.DAOs.Implementations
                 Feedback feedback = _feedbackRepo.GetByID(key);
                 if (feedback == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Feedback does not exist in the system.");
                 }
                 return _mapper.Map<GetFeedback>(feedback);
             }

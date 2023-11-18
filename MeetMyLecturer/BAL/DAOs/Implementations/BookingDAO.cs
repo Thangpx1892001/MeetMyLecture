@@ -39,36 +39,6 @@ namespace BAL.DAOs.Implementations
             _mapper = mapper;
         }
 
-        public List<GetBooking> CheckStatus(int key)
-        {
-            try
-            {
-                List<Booking> list = _bookingRepo.GetAll().Include(b => b.Slot)
-                                                .Where(b => b.StudentId == key && b.Status != "Denied").ToList();
-                foreach (var item in list)
-                {
-                    if (item.Slot.EndDatetime <= DateTime.Now && item.Status == "Pending")
-                    {
-                        item.Status = "Denied";
-                        item.Reason = "Slot is finish";
-                        _bookingRepo.Update(item);
-                        _bookingRepo.Commit();
-                    }
-                    else if (item.Slot.EndDatetime <= DateTime.Now)
-                    {
-                        item.Status = "Finish";
-                        _bookingRepo.Update(item);
-                        _bookingRepo.Commit();
-                    }
-                }
-                return _mapper.Map<List<GetBooking>>(list);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         public void Create(CreateBooking create)
         {
             try
@@ -86,17 +56,17 @@ namespace BAL.DAOs.Implementations
 
                 if (checkStudentId == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Account does not exist in the system.");
                 }
 
                 if (checkSlotId == null)
                 {
-                    throw new Exception("Slot Id does not exist in the system.");
+                    throw new Exception("Slot does not exist in the system.");
                 }
 
                 if (checkSubjectId == null)
                 {
-                    throw new Exception("Subject Id does not exist in the system.");
+                    throw new Exception("Subject does not exist in the system.");
                 }
 
                 var checkBooking = _bookingRepo.GetAll().FirstOrDefault(b => b.StudentId == create.StudentId && b.SlotId == create.SlotId);
@@ -176,17 +146,17 @@ namespace BAL.DAOs.Implementations
                 var checkSubjectId = _subjectRepo.GetByID(createByCode.SubjectId);
                 if (checkStudentId == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Account does not exist in the system.");
                 }
 
                 if (checkSlotId == null)
                 {
-                    throw new Exception("Slot Id does not exist in the system.");
+                    throw new Exception("Slot does not exist in the system.");
                 }
 
                 if (checkSubjectId == null)
                 {
-                    throw new Exception("Subject Id does not exist in the system.");
+                    throw new Exception("Subject does not exist in the system.");
                 }
 
                 var checkBooking = _bookingRepo.GetAll().FirstOrDefault(b => b.StudentId == createByCode.StudentId && b.SlotId == createByCode.SlotId);
@@ -257,7 +227,7 @@ namespace BAL.DAOs.Implementations
                 Booking existedBooking = _bookingRepo.GetByID(key);
                 if (existedBooking == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Booking does not exist in the system.");
                 }
                 _bookingRepo.Delete(key);
                 _bookingRepo.Commit();
@@ -275,7 +245,7 @@ namespace BAL.DAOs.Implementations
                 Booking booking = _bookingRepo.GetAll().Include(b => b.Slot).FirstOrDefault(b => b.Id == key);
                 if (booking == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Booking does not exist in the system.");
                 }
                 return _mapper.Map<GetBooking>(booking);
             }
@@ -308,23 +278,23 @@ namespace BAL.DAOs.Implementations
                 var checkSubjectId = _subjectRepo.GetByID(update.SubjectId);
                 if (checkStudentId == null)
                 {
-                    throw new Exception("Account Id does not exist in the system.");
+                    throw new Exception("Account does not exist in the system.");
                 }
 
                 if (checkSlotId == null)
                 {
-                    throw new Exception("Slot Id does not exist in the system.");
+                    throw new Exception("Slot does not exist in the system.");
                 }
 
                 if (checkSubjectId == null)
                 {
-                    throw new Exception("Subject Id does not exist in the system.");
+                    throw new Exception("Subject does not exist in the system.");
                 }
 
                 Booking existedBooking = _bookingRepo.GetAll().Include(b => b.Slot).FirstOrDefault(b => b.Id == key);
                 if (existedBooking == null)
                 {
-                    throw new Exception("Id does not exist in the system.");
+                    throw new Exception("Booking does not exist in the system.");
                 }
 
                 existedBooking.StudentId = update.StudentId;
@@ -335,6 +305,7 @@ namespace BAL.DAOs.Implementations
                 existedBooking.Status = update.Status;
                 _bookingRepo.Update(existedBooking);
                 _bookingRepo.Commit();
+
                 if (existedBooking.Status.Equals("Success"))
                 {
                     Notification notification = new Notification()
@@ -350,6 +321,7 @@ namespace BAL.DAOs.Implementations
                     _notificationRepo.Insert(notification);
                     _notificationRepo.Commit();
                 }
+
                 if (existedBooking.Status.Equals("Denied"))
                 {
                     Notification notification = new Notification()
@@ -365,6 +337,7 @@ namespace BAL.DAOs.Implementations
                     _notificationRepo.Insert(notification);
                     _notificationRepo.Commit();
                 }
+
                 List<Booking> bookings = _bookingRepo.GetAll().Where(b => b.SlotId == checkSlotId.Id && b.Status == "Success").ToList();
                 var countBooking = bookings.Count();
                 if (countBooking == checkSlotId.LimitBooking)
