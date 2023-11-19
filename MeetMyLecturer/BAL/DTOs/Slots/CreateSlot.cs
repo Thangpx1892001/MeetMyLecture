@@ -33,5 +33,8 @@ namespace BAL.DTOs.Slots
 
         [Required(ErrorMessage = "End Time is required.")]
         public DateTime EndDateTime { get; set; }
+
+        [Required(ErrorMessage = "Repeat is required.")]
+        public string Repeat { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace BAL.Profiles
     {
         public AccountProfile()
         {
-            CreateMap<Account, GetAccount>()/*.ForMember(dept => dept.SubjectName, opts => opts.MapFrom(src => src.Subjects.Select(s => s.Name)))*/.ReverseMap();
+            CreateMap<Account, GetAccount>().ForMember(dept => dept.SubjectId, opts => opts.MapFrom(src => src.Subjects.Select(s => s.Id))).ReverseMap();
         }
     }
 }
