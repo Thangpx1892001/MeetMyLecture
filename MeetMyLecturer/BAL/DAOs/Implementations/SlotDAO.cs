@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BAL.DAOs.Interfaces;
 using BAL.DTOs.Slots;
+using BAL.Enums;
 using DAL.Models;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
@@ -11,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Reflection.Metadata.BlobBuilder;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BAL.DAOs.Implementations
 {
@@ -81,20 +84,68 @@ namespace BAL.DAOs.Implementations
                     throw new Exception("Duration time need from 15 minute to 3 hour.");
                 }
 
-                Slot slot = new Slot()
+                if (create.Repeat == "Daily")
                 {
-                    LecturerId = create.LecturerId,
-                    Location = create.Location,
-                    Code = create.Code,
-                    LimitBooking = create.LimitBooking,
-                    StartDatetime = new DateTime(create.Date.Year, create.Date.Month, create.Date.Day, create.StartDateTime.Hour, create.StartDateTime.Minute, create.StartDateTime.Second),
-                    EndDatetime = new DateTime(create.Date.Year, create.Date.Month, create.Date.Day, create.EndDateTime.Hour, create.EndDateTime.Minute, create.EndDateTime.Second),
-                    Mode = create.Mode,
-                    CreatedAt = DateTime.Now,
-                    Status = "Not Book",
-                };
-                _slotRepo.Insert(slot);
-                _slotRepo.Commit();
+                    DateTime endDaily = create.Date.AddDays(6);
+                    for (DateTime date = create.Date; date <= endDaily; date = date.AddDays(1))
+                    {
+                        Slot slotDaily = new Slot()
+                        {
+                            LecturerId = create.LecturerId,
+                            Location = create.Location,
+                            Code = create.Code,
+                            LimitBooking = create.LimitBooking,
+                            StartDatetime = new DateTime(date.Year, date.Month, date.Day, create.StartDateTime.Hour, create.StartDateTime.Minute, create.StartDateTime.Second),
+                            EndDatetime = new DateTime(date.Year, date.Month, date.Day, create.EndDateTime.Hour, create.EndDateTime.Minute, create.EndDateTime.Second),
+                            Mode = create.Mode,
+                            CreatedAt = DateTime.Now,
+                            Status = "Not Book",
+                        };
+                        _slotRepo.Insert(slotDaily);
+                        _slotRepo.Commit();
+                    }
+                }
+                else if (create.Repeat == "Weekly")
+                {
+                    var checkTerm = GetTermForDate(create.Date);
+                    if(checkTerm != null) 
+                    {
+                        for (DateTime date = create.Date; date <= checkTerm.EndDate; date = date.AddDays(7))
+                        {
+                            Slot slotDaily = new Slot()
+                            {
+                                LecturerId = create.LecturerId,
+                                Location = create.Location,
+                                Code = create.Code,
+                                LimitBooking = create.LimitBooking,
+                                StartDatetime = new DateTime(date.Year, date.Month, date.Day, create.StartDateTime.Hour, create.StartDateTime.Minute, create.StartDateTime.Second),
+                                EndDatetime = new DateTime(date.Year, date.Month, date.Day, create.EndDateTime.Hour, create.EndDateTime.Minute, create.EndDateTime.Second),
+                                Mode = create.Mode,
+                                CreatedAt = DateTime.Now,
+                                Status = "Not Book",
+                            };
+                            _slotRepo.Insert(slotDaily);
+                            _slotRepo.Commit();
+                        }
+                    }
+                }
+                else 
+                {
+                    Slot slot = new Slot()
+                    {
+                        LecturerId = create.LecturerId,
+                        Location = create.Location,
+                        Code = create.Code,
+                        LimitBooking = create.LimitBooking,
+                        StartDatetime = create.Date.AddHours(create.StartDateTime.Hour).AddMinutes(create.StartDateTime.Minute).AddSeconds(create.StartDateTime.Second),
+                        EndDatetime = create.Date.AddHours(create.EndDateTime.Hour).AddMinutes(create.EndDateTime.Minute).AddSeconds(create.EndDateTime.Second),
+                        Mode = create.Mode,
+                        CreatedAt = DateTime.Now,
+                        Status = "Not Book",
+                    };
+                    _slotRepo.Insert(slot);
+                    _slotRepo.Commit();
+                }
             }
             catch (Exception ex)
             {
@@ -178,8 +229,8 @@ namespace BAL.DAOs.Implementations
                 existedSlot.Code = update.Code;
                 existedSlot.LimitBooking = update.LimitBooking;
                 existedSlot.Mode = update.Mode;
-                existedSlot.StartDatetime = new DateTime(update.Date.Year, update.Date.Month, update.Date.Day, update.StartDateTime.Hour, update.StartDateTime.Minute, update.StartDateTime.Second);
-                existedSlot.EndDatetime = new DateTime(update.Date.Year, update.Date.Month, update.Date.Day, update.EndDateTime.Hour, update.EndDateTime.Minute, update.EndDateTime.Second);
+                existedSlot.StartDatetime = update.Date.AddHours(update.StartDateTime.Hour).AddMinutes(update.StartDateTime.Minute).AddSeconds(update.StartDateTime.Second);
+                existedSlot.EndDatetime = update.Date.AddHours(update.EndDateTime.Hour).AddMinutes(update.EndDateTime.Minute).AddSeconds(update.EndDateTime.Second);
                 if (existedSlot.EndDatetime <= DateTime.Now)
                 {
                     existedSlot.Status = "Finish";
@@ -191,6 +242,26 @@ namespace BAL.DAOs.Implementations
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public static Term GetTermForDate(DateTime date)
+        {
+            List<Term> terms = new List<Term>()
+            {
+                new Term("Fall2023", new DateTime(2023, 9, 4), new DateTime(2023, 12, 31)),
+                new Term("Spring2024", new DateTime(2024, 1, 1), new DateTime(2024, 5, 5)),
+                new Term("Summer2024", new DateTime(2024, 5, 8), new DateTime(2024, 9, 1)),
+                new Term("Fall2024", new DateTime(2024, 9, 4), new DateTime(2024, 12, 31)),
+            };
+
+            foreach (Term term in terms)
+            {
+                if (date >= term.StartDate && date <= term.EndDate)
+                {
+                    return term;
+                }
+            }
+            return null;
         }
     }
 }
