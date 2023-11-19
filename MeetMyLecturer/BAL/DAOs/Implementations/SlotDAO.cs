@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BAL.DAOs.Interfaces;
+using BAL.DTOs.Terms;
 using BAL.DTOs.Slots;
-using BAL.Enums;
 using DAL.Models;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
@@ -21,12 +21,17 @@ namespace BAL.DAOs.Implementations
     {
         private AccountRepository _AccountRepo;
         private SlotRepository _slotRepo;
+        private BookingRepository _bookingRepo;
+        private NotificationRepository _notificationRepo;
         private IMapper _mapper;
 
-        public SlotDAO(IAccountRepository accountRepo, ISlotRepository slotRepo, IMapper mapper)
+        public SlotDAO(IAccountRepository accountRepo, ISlotRepository slotRepo, IBookingRepository bookingRepo, 
+            INotificationRepository notificationRepo , IMapper mapper)
         {
             _AccountRepo = (AccountRepository)accountRepo;
             _slotRepo = (SlotRepository)slotRepo;
+            _bookingRepo = (BookingRepository)bookingRepo;
+            _notificationRepo = (NotificationRepository)notificationRepo;
             _mapper = mapper;
         }
 
@@ -157,7 +162,13 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                Slot existedSlot = _slotRepo.GetByID(key);
+                Slot existedSlot = _slotRepo.GetAll().Include(s => s.Lecturer).FirstOrDefault(s => s.Id == key);
+                var checkBooking = _bookingRepo.GetAll().Include(b => b.Subject).FirstOrDefault(b => b.SlotId == key && b.Status == "Success");
+                var bookingPending = _bookingRepo.GetAll().Where(b => b.SlotId == key && b.Status == "Pending");
+                if (checkBooking != null)
+                {
+                    throw new Exception("Slot has booking in the system. Can't delete");
+                }
                 if (existedSlot == null)
                 {
                     throw new Exception("Slot does not exist in the system.");
@@ -165,6 +176,26 @@ namespace BAL.DAOs.Implementations
                 existedSlot.Status = "Unactive";
                 _slotRepo.Update(existedSlot);
                 _slotRepo.Commit();
+                foreach(var item in bookingPending)
+                {
+                    item.Reason = "Slot was deleted";
+                    item.Status = "Denied";
+                    _bookingRepo.Update(item);
+                    _bookingRepo.Commit();
+
+                    Notification notification = new Notification()
+                    {
+                        BookingId = item.Id,
+                        SendToId = item.StudentId,
+                        Title = existedSlot.Lecturer.Fullname + " denied a booking slot Location: " + existedSlot.Location + " " +
+                        item.Subject.SubjectCode + " " + existedSlot.StartDatetime.TimeOfDay + " - " + existedSlot.EndDatetime.TimeOfDay + " " +
+                        existedSlot.StartDatetime.ToString("dd/MM/yyyy") + " Reason: " + item.Reason,
+                        IsRead = false,
+                        CreatedAt = DateTime.Now,
+                    };
+                    _notificationRepo.Insert(notification);
+                    _notificationRepo.Commit();
+                }
             }
             catch (Exception ex)
             {

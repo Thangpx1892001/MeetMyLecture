@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BAL.Enums
+namespace BAL.DTOs.Terms
 {
     public class Term
     {

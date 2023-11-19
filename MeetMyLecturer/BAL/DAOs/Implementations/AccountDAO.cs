@@ -119,7 +119,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                Account account = _AccountRepo.GetByID(key);
+                Account account = _AccountRepo.GetAll().Include(a => a.Subjects).FirstOrDefault(a => a.Id == key);
                 if (account == null)
                 {
                     throw new Exception("Account does not exist in the system.");
@@ -136,7 +136,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<GetAccount> listAccount = _mapper.Map<List<GetAccount>>(_AccountRepo.GetAll());
+                List<GetAccount> listAccount = _mapper.Map<List<GetAccount>>(_AccountRepo.GetAll().Include(a => a.Subjects));
                 return listAccount;
             }
             catch (Exception ex)
