@@ -37,6 +37,19 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
+                List<Subject> listSubject = new List<Subject>();
+                if (create.SubjectId != null)
+                {
+                    foreach (var id in create.SubjectId)
+                    {
+                        var checkId = _SubjectRepo.GetByID(id);
+                        if (checkId == null)
+                        {
+                            throw new Exception("Subject does not exist in the system.");
+                        }
+                        listSubject.Add(checkId);
+                    }
+                }
                 Account account = new Account()
                 {
                     Username = create.Username,
@@ -64,29 +77,15 @@ namespace BAL.DAOs.Implementations
 
                 _AccountRepo.Insert(account);
                 _AccountRepo.Commit();
-
                 if (checkRole == 1)
                 {
-                    List<Subject> listSubject = new List<Subject>();
-                    //var listSubjectId = create.SubjectId;
-                    if (create.SubjectId != null)
+                    foreach (var item in listSubject)
                     {
-                        foreach (var id in create.SubjectId)
-                        {
-                            var checkId = _SubjectRepo.GetByID(id);
-                            if (checkId == null)
-                            {
-                                throw new Exception("Subject does not exist in the system.");
-                            }
-                            listSubject.Add(checkId);
-                        }
-                        foreach (var item in listSubject)
-                        {
-                            item.Lecturers.Add(account);
-                            _SubjectRepo.Update(item);
-                            _SubjectRepo.Commit();
-                        }
+                        item.Lecturers.Add(account);
+                        _SubjectRepo.Update(item);
+                        _SubjectRepo.Commit();
                     }
+
                 }
             }
             catch (Exception ex)
@@ -149,6 +148,19 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
+                List<Subject> listSubject = new List<Subject>();
+                if (update.SubjectId != null)
+                {
+                    foreach (var id in update.SubjectId)
+                    {
+                        var checkId = _SubjectRepo.GetByID(id);
+                        if (checkId == null)
+                        {
+                            throw new Exception("Subject does not exist in the system.");
+                        }
+                        listSubject.Add(checkId);
+                    }
+                }
                 Account existedAccount = _AccountRepo.GetByID(key);
                 if (existedAccount == null)
                 {
@@ -167,19 +179,6 @@ namespace BAL.DAOs.Implementations
 
                 if (existedAccount.Role == "Lecturer")
                 {
-                    List<Subject> listSubject = new List<Subject>();
-                    if (update.SubjectId != null)
-                    {
-                        foreach (var id in update.SubjectId)
-                        {
-                            var checkId = _SubjectRepo.GetByID(id);
-                            if (checkId == null)
-                            {
-                                throw new Exception("Subject does not exist in the system.");
-                            }
-                            listSubject.Add(checkId);
-                        }
-                    }
                     foreach (var item in listSubject)
                     {
                         item.Lecturers.Add(existedAccount);
