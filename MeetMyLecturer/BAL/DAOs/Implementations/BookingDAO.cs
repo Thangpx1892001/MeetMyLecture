@@ -93,8 +93,8 @@ namespace BAL.DAOs.Implementations
                     { 
                         BookingId = getBooking.Id,
                         SendToId = getBooking.Slot.LecturerId,
-                        Title = checkStudentId.Fullname +" pending approval a booking slot Location: " + getBooking.Slot.Location + " " + 
-                                checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.TimeOfDay + " - " + getBooking.Slot.EndDatetime.TimeOfDay + " " +
+                        Title = checkStudentId.Fullname + " is pending approval of a booking slot Location: " + getBooking.Slot.Location + " " + 
+                                checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.ToString("HH:mm") + " - " + getBooking.Slot.EndDatetime.ToString("HH:mm") + " " +
                                 getBooking.Slot.StartDatetime.ToString("dd/MM/yyyy"),
                         IsRead = false,
                         CreatedAt = DateTime.Now,
@@ -122,7 +122,7 @@ namespace BAL.DAOs.Implementations
                         BookingId = getBooking.Id,
                         SendToId = checkStudentId.Id,
                         Title = getBooking.Slot.Lecturer.Fullname + " accepted your request Location: " + getBooking.Slot.Location + " " +
-                                checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.TimeOfDay + " - " + getBooking.Slot.EndDatetime.TimeOfDay + " " +
+                                checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.ToString("HH:mm") + " - " + getBooking.Slot.EndDatetime.ToString("HH:mm") + " " +
                                 getBooking.Slot.StartDatetime.ToString("dd/MM/yyyy"),
                         IsRead = false,
                         CreatedAt = DateTime.Now,
@@ -191,8 +191,8 @@ namespace BAL.DAOs.Implementations
                     {
                         BookingId = getBooking.Id,
                         SendToId = getBooking.Slot.LecturerId,
-                        Title = checkStudentId.Fullname + " join slot by code Location: " + getBooking.Slot.Location + " " +
-                                checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.TimeOfDay + " - " + getBooking.Slot.EndDatetime.TimeOfDay + " " +
+                        Title = checkStudentId.Fullname + " joins a slot using code Location: " + getBooking.Slot.Location + " " +
+                                checkSubjectId.SubjectCode + " " + getBooking.Slot.StartDatetime.ToString("HH:mm") + " - " + getBooking.Slot.EndDatetime.ToString("HH:mm") + " " +
                                 getBooking.Slot.StartDatetime.ToString("dd/MM/yyyy"),
                         IsRead = false,
                         CreatedAt = DateTime.Now,
@@ -313,7 +313,7 @@ namespace BAL.DAOs.Implementations
                         BookingId = existedBooking.Id,
                         SendToId = checkStudentId.Id,
                         Title = checkSlotId.Lecturer.Fullname +" accepted a booking slot Location: " + checkSlotId.Location + " " +
-                        checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
+                        checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.ToString("HH:mm") + " - " + checkSlotId.EndDatetime.ToString("HH:mm") + " " +
                         checkSlotId.StartDatetime.ToString("dd/MM/yyyy"),
                         IsRead = false,
                         CreatedAt = DateTime.Now,
@@ -329,7 +329,7 @@ namespace BAL.DAOs.Implementations
                         BookingId = existedBooking.Id,
                         SendToId = checkStudentId.Id,
                         Title = checkSlotId.Lecturer.Fullname +" denied a booking slot Location: " + checkSlotId.Location + " " +
-                        checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
+                        checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.ToString("HH:mm") + " - " + checkSlotId.EndDatetime.ToString("HH:mm") + " " +
                         checkSlotId.StartDatetime.ToString("dd/MM/yyyy") + " Reason: " + existedBooking.Reason,
                         IsRead = false,
                         CreatedAt = DateTime.Now,
@@ -359,7 +359,7 @@ namespace BAL.DAOs.Implementations
                                 BookingId = existedBooking.Id,
                                 SendToId = checkStudentId.Id,
                                 Title = checkSlotId.Lecturer.Fullname +" denied a booking slot Location: " + checkSlotId.Location + " " +
-                                        checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.TimeOfDay + " - " + checkSlotId.EndDatetime.TimeOfDay + " " +
+                                        checkSubjectId.SubjectCode + " " + checkSlotId.StartDatetime.ToString("HH:mm") + " - " + checkSlotId.EndDatetime.ToString("HH:mm") + " " +
                                         checkSlotId.StartDatetime.ToString("dd/MM/yyyy") + " Reason: " + booking.Reason,
                                 IsRead = false,
                                 CreatedAt = DateTime.Now,
