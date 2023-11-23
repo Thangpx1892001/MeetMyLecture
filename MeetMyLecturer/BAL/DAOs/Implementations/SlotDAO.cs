@@ -39,14 +39,13 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<Slot> list = _slotRepo.GetAll().Where(s => s.LecturerId == key && s.Status != "Unactive").ToList();
-                foreach (var item in list)
-                {
-                    if(item.EndDatetime <= DateTime.Now)
+                List<Slot> list = _slotRepo.GetAll().Where(s => s.LecturerId == key && s.EndDatetime <= DateTime.Now && s.Status == "Not Book").ToList();
+                if(list.Count > 0) { 
+                    foreach (var item in list)
                     {
-                        item.Status = "Finish";
-                        _slotRepo.Update(item);
-                        _slotRepo.Commit();
+                            item.Status = "Finish";
+                            _slotRepo.Update(item);
+                            _slotRepo.Commit();
                     }
                 }
                 return _mapper.Map<List<GetSlot>>(list);

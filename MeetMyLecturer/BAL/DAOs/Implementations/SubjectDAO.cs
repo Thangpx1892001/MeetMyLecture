@@ -4,6 +4,7 @@ using BAL.DTOs.Subjects;
 using DAL.Models;
 using DAL.Repositories.Implementations;
 using DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,16 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
+                var checkName = _SubjectRepo.GetAll().FirstOrDefault(s => s.Name == create.Name);
+                var checkCode = _SubjectRepo.GetAll().FirstOrDefault(s => s.SubjectCode == create.SubjectCode);
+                if (checkName != null)
+                {
+                    throw new Exception("Subject name already exist.");
+                }
+                if (checkCode != null)
+                {
+                    throw new Exception("Subject code already exist.");
+                }
                 Subject account = new Subject()
                 {
                     SubjectCode = create.SubjectCode,
@@ -97,6 +108,16 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
+                var checkName = _SubjectRepo.GetAll().FirstOrDefault(s => s.Name == update.Name && s.Id != key && s.Status == "Active");
+                var checkCode = _SubjectRepo.GetAll().FirstOrDefault(s => s.SubjectCode == update.SubjectCode && s.Id != key && s.Status == "Active");
+                if (checkName != null)
+                {
+                    throw new Exception("Subject name already exist.");
+                }
+                if (checkCode != null)
+                {
+                    throw new Exception("Subject code already exist.");
+                }
                 Subject existedSubject = _SubjectRepo.GetByID(key);
                 if (existedSubject == null)
                 {

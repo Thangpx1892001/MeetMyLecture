@@ -50,6 +50,12 @@ namespace BAL.DAOs.Implementations
                         listSubject.Add(checkId);
                     }
                 }
+                var checkEmail = _AccountRepo.GetAll().FirstOrDefault(a => a.Email == create.Email && a.Status == "Active");
+                if (checkEmail != null)
+                {
+                    throw new Exception("Email is already exist.");
+                }
+
                 Account account = new Account()
                 {
                     Username = create.Username,
@@ -161,7 +167,12 @@ namespace BAL.DAOs.Implementations
                         listSubject.Add(checkId);
                     }
                 }
-                Account existedAccount = _AccountRepo.GetByID(key);
+                var emailExists = _AccountRepo.GetAll().FirstOrDefault(a => a.Email == update.Email && a.Id != key && a.Status == "Active");
+                if (emailExists != null)
+                {
+                    throw new Exception("Email is already exist.");
+                }
+                Account existedAccount = _AccountRepo.GetAll().Include(a => a.Subjects).FirstOrDefault(a => a.Id == key);
                 if (existedAccount == null)
                 {
                     throw new Exception("Account does not exist in the system.");
