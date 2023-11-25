@@ -209,7 +209,7 @@ namespace BAL.DAOs.Implementations
             try
             {
                 Account existedAccount = _AccountRepo.GetAll()
-                    .FirstOrDefault(x => x.Email == authenAccount.Email && x.Password.Equals(authenAccount.Password));
+                    .FirstOrDefault(a => a.Email == authenAccount.Email && a.Password.Equals(authenAccount.Password) && a.Status == "Active");
 
                 if (existedAccount == null)
                 {

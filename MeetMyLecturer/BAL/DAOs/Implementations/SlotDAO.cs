@@ -39,7 +39,9 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                List<Slot> list = _slotRepo.GetAll().Where(s => s.LecturerId == key && s.EndDatetime <= DateTime.Now && s.Status == "Not Book").ToList();
+                string formattedTime = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
+                DateTime check = DateTime.Parse(formattedTime);
+                List<Slot> list = _slotRepo.GetAll().Where(s => s.LecturerId == key && s.EndDatetime <= check && s.Status == "Not Book").ToList();
                 if(list.Count > 0) { 
                     foreach (var item in list)
                     {
