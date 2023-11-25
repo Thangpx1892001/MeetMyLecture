@@ -57,8 +57,8 @@ namespace BAL.DAOs.Implementations
                 Notification notification = new Notification()
                 {
                     BookingId = checkBookingId.Id,
-                    Title = "You received a feedback Location: " + checkBookingId.Slot.Location + " " + checkBookingId.Slot.StartDatetime.TimeOfDay + " - " + checkBookingId.Slot.EndDatetime.TimeOfDay + " " +
-                            checkBookingId.Slot.StartDatetime.Date,
+                    SendToId = checkBookingId.Slot.LecturerId,
+                    Title = $"You received a feedback Location: {checkBookingId.Slot.Location} \n{checkBookingId.Slot.StartDatetime.ToString("HH:mm")} - {checkBookingId.Slot.EndDatetime.ToString("HH:mm")} {checkBookingId.Slot.StartDatetime.ToString("dd/MM/yyyy")}",
                     IsRead = false,
                     CreatedAt = DateTime.Now,
                 };
