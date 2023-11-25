@@ -33,7 +33,7 @@ namespace BAL.DAOs.Implementations
         {
             try
             {
-                var checkBookingId = _bookingRepo.GetAll().Include(b => b.Slot).FirstOrDefault(b => b.Id == create.BookingId);
+                var checkBookingId = _bookingRepo.GetAll().Include(b => b.Subject).Include(b => b.Slot).FirstOrDefault(b => b.Id == create.BookingId);
                 if (checkBookingId == null)
                 {
                     throw new Exception("Booking does not exist in the system.");
@@ -58,7 +58,7 @@ namespace BAL.DAOs.Implementations
                 {
                     BookingId = checkBookingId.Id,
                     SendToId = checkBookingId.Slot.LecturerId,
-                    Title = $"You received a feedback Location: {checkBookingId.Slot.Location} \n{checkBookingId.Slot.StartDatetime.ToString("HH:mm")} - {checkBookingId.Slot.EndDatetime.ToString("HH:mm")} {checkBookingId.Slot.StartDatetime.ToString("dd/MM/yyyy")}",
+                    Title = $"You received a feedback Location: {checkBookingId.Slot.Location}  ||  {checkBookingId.Subject.SubjectCode} \n{checkBookingId.Slot.StartDatetime.ToString("HH:mm")} - {checkBookingId.Slot.EndDatetime.ToString("HH:mm")}    {checkBookingId.Slot.StartDatetime.ToString("dd/MM/yyyy")}",
                     IsRead = false,
                     CreatedAt = DateTime.Now,
                 };
